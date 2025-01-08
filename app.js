@@ -1,13 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const allRouters = require("./src/routers/all.router");
 const { notFoundError, allErrorHandler } = require("./src/middlewares/errorHandler.middleware");
 const { SwaggerConfig } = require("./src/configs/swagger.config");
 
 require("./src/configs/env.config"); // Config environment
 const app = express();
 require("./src/configs/db.config"); // Config DB connection
+require("./src/configs/model.config"); // Models configuration (For development mode)
 
 // Setup application
 app.use(cors());
@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_PRIVATE_KEY));
 
 // Routers
+const allRouters = require("./src/routers/all.router");
 app.use("/api", allRouters);
 SwaggerConfig(app); // Swagger configuration
 app.use(notFoundError);
