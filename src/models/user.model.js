@@ -1,5 +1,6 @@
 const { DataTypes } = require("@sequelize/core");
 const sequelize = require("../configs/db.config");
+const Contact = require("./contact.model");
 
 const User = sequelize.define("user", {
     username: {
@@ -12,30 +13,20 @@ const User = sequelize.define("user", {
         }
     },
     hashedPassword: {
-        type: DataTypes.STRING(60),
+        type: DataTypes.STRING(128),
         allowNull: false
     },
-    first_name: {
+    firstName: {
         type: DataTypes.STRING(30),
         allowNull: false,
         validate: {
             isAlpha: true
         }
     },
-    last_name: {
+    lastName: {
         type: DataTypes.STRING(30),
-    },
-    phoneNumber: {
-        type: DataTypes.STRING(11),
-        allowNull: false,
         validate: {
-            isNumeric: true
-        }
-    },
-    email: {
-        type: DataTypes.STRING(40),
-        validate: {
-            isEmail: true
+            isAlpha: true
         }
     },
     bio: {
@@ -57,7 +48,10 @@ const User = sequelize.define("user", {
         }
     }
 }, {
-    paranoid: false
+    paranoid: true
 });
+
+User.hasMany(Contact);
+Contact.belongsTo(User);
 
 module.exports = User;
