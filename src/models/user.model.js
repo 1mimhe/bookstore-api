@@ -8,7 +8,7 @@ const User = sequelize.define("user", {
         allowNull: false,
         unique: true,
         validate: {
-            len: [5, 40],
+            len: [5, 30],
             isAlphanumeric: true
         }
     },

@@ -42,7 +42,6 @@
           "username",
           "password",
           "firstName",
-          "lastName",
           "phoneNumber"
         ],
         "properties": {

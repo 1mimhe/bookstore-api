@@ -5,7 +5,8 @@ const User = require("../models/user.model");
 const sequelize = require("../configs/db.config");
 const Contact = require("../models/contact.model");
 const authMessages = require("../constants/auth.messages");
-const hashPassword = require("../utils/hashPassword");
+const { hashPassword } = require("../utils/auth.utils");
+const { registrationValidator } = require("../validators/auth.validators");
 
 class AuthService {
     #User;
@@ -19,8 +20,15 @@ class AuthService {
     }
 
     async registrationUser(user) {
+        const validate = registrationValidator();
+        const isValid = validate(user);
+        if (!isValid) throw createHttpError.BadRequest(validate.errors);
+
         user.hashedPassword = await hashPassword(user.password);
         delete user.password;
+        
+        const whereClause = [{ phoneNumber: user.phoneNumber }];
+        if (user?.email) whereClause.push({ email: user.email });
 
         const result = await sequelize.transaction(async t => {            
             const existingUser = await this.#User.findOne({
@@ -31,10 +39,7 @@ class AuthService {
                     model: this.#Contact,
                     required: true,
                     where: {
-                        [Op.or]: [
-                            { phoneNumber: user.phoneNumber },
-                            { email: user.email }
-                        ]
+                        [Op.or]: whereClause
                     }
                 }],
                 transaction: t

@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 
-module.exports = async (password) => {
+async function hashPassword(password) {
     const salt = crypto.randomBytes(16).toString("hex");
     return new Promise((resolve, reject) => {
         crypto.pbkdf2(password, salt, 1000, 64, "sha512", (err, derivedKey) => {
@@ -8,4 +8,8 @@ module.exports = async (password) => {
             resolve(derivedKey.toString("hex"));
         });
     });
+}
+
+module.exports = {
+    hashPassword
 }
