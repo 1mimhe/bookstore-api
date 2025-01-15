@@ -8,7 +8,7 @@ const User = sequelize.define("user", {
         allowNull: false,
         unique: true,
         validate: {
-            len: [5, 40],
+            len: [5, 30],
             isAlphanumeric: true
         }
     },
@@ -51,7 +51,7 @@ const User = sequelize.define("user", {
     paranoid: true
 });
 
-User.hasMany(Contact);
+User.hasOne(Contact);
 Contact.belongsTo(User);
 
 module.exports = User;

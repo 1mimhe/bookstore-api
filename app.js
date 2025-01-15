@@ -8,6 +8,7 @@ require("./src/configs/env.config"); // Config environment
 const app = express();
 require("./src/configs/db.config"); // Config DB connection
 require("./src/configs/model.config"); // Models configuration (For development mode)
+require("./src/configs/redis.config"); // Config Redis
 
 // Setup application
 app.use(cors());
