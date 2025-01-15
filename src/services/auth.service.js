@@ -27,21 +27,18 @@ class AuthService {
         user.hashedPassword = await hashPassword(user.password);
         delete user.password;
 
-        const whereClause = [];
-        if (user?.email) whereClause.push({ email: user.email });
-        if (user?.phoneNumber) whereClause.push({ phoneNumber: user.phoneNumber });
+        const whereClause = [{ username: user.username }];
+        if (user?.email) whereClause.push({ '$Contact.email$': user.email });
+        if (user?.phoneNumber) whereClause.push({ '$Contact.phoneNumber$': user.phoneNumber });
 
         const result = await sequelize.transaction(async t => {
             const existingUser = await this.#User.findOne({
                 where: {
-                    username: user.username
+                    [Op.or]: whereClause
                 },
                 include: [{
                     model: this.#Contact,
-                    required: true,
-                    where: {
-                        [Op.or]: whereClause
-                    }
+                    required: true
                 }],
                 transaction: t
             });

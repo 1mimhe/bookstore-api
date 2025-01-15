@@ -51,7 +51,7 @@ const User = sequelize.define("user", {
     paranoid: true
 });
 
-User.hasMany(Contact);
+User.hasOne(Contact);
 Contact.belongsTo(User);
 
 module.exports = User;
