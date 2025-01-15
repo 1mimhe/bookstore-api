@@ -12,7 +12,7 @@ function registrationValidator() {
             phoneNumber: { type: 'string', format: 'iran-phone' },
             email: { type: 'string', format: 'email' },
         },
-        required: ['username', 'firstName', 'password', 'phoneNumber'],
+        required: ['username', 'firstName', 'password'],
         additionalProperties: false,
     };
 

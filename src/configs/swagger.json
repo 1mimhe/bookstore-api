@@ -40,9 +40,8 @@
         "type": "object",
         "required": [
           "username",
-          "password",
           "firstName",
-          "phoneNumber"
+          "password"
         ],
         "properties": {
           "username": {

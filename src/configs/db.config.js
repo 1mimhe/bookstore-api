@@ -2,7 +2,7 @@ const { Sequelize } = require("@sequelize/core");
 
 const sequelize = new Sequelize({
     dialect: "mysql",
-    host: process.env.HOST,
+    host: process.env.HOSTNAME,
     port: +process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,

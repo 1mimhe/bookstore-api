@@ -26,11 +26,12 @@ class AuthService {
 
         user.hashedPassword = await hashPassword(user.password);
         delete user.password;
-        
-        const whereClause = [{ phoneNumber: user.phoneNumber }];
-        if (user?.email) whereClause.push({ email: user.email });
 
-        const result = await sequelize.transaction(async t => {            
+        const whereClause = [];
+        if (user?.email) whereClause.push({ email: user.email });
+        if (user?.phoneNumber) whereClause.push({ phoneNumber: user.phoneNumber });
+
+        const result = await sequelize.transaction(async t => {
             const existingUser = await this.#User.findOne({
                 where: {
                     username: user.username
@@ -44,11 +45,11 @@ class AuthService {
                 }],
                 transaction: t
             });
-            
+
             if (existingUser) {
                 throw createHttpError.BadRequest(authMessages.UserAlreadyExists);
             }
-            
+
             const newUser = await this.#User.create(user, {
                 fields: ["username", "hashedPassword", "firstName", "lastName"],
                 transaction: t
