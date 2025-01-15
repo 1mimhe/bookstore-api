@@ -1,4 +1,5 @@
 const autoBind = require("auto-bind");
+const { Op } = require("@sequelize/core");
 const User = require("../models/user.model");
 const Contact = require("../models/contact.model");
 
@@ -23,8 +24,7 @@ class UserService {
                 ]
             },
             include: [{
-                model: this.#Contact,
-                required: true
+                model: this.#Contact
             }],
             raw: true
         });
