@@ -33,7 +33,7 @@
         }
       }
     },
-    "/api/auth/loginUser": {
+    "/api/auth/login": {
       "post": {
         "summary": "login user.",
         "tags": [
