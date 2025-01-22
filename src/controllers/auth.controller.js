@@ -1,6 +1,7 @@
 const autoBind = require("auto-bind");
 const AuthService = require("../services/auth.service");
 const authMessages = require("../constants/auth.messages");
+const cookieNames = require("../constants/cookie.names");
 
 class AuthController {
     #Service;
@@ -27,23 +28,43 @@ class AuthController {
     async loginUser(req, res, next) {
         try {
             const { identifier, password } = req.body;
-            const a = await this.#Service.loginUser({ identifier, password });
-            console.log(a.accessToken, a.refreshToken );
+            const { accessToken, refreshToken } = await this.#Service.loginUser({ identifier, password });
             
             return res.status(201)
-            .set("Authorization", `Bearer ${a.accessToken}`)
-            .cookie("Refresh-Token", a.refreshToken, {
-                httpOnly: true,
-                secure: true,
-                sameSite: "strict",
-                maxAge: 20 * 24 * 3600 * 1000
-            })
-            .json({
-                success: true,
-                message: authMessages.UserLoginSuccessfully
-            });
+                .set("Authorization", `Bearer ${accessToken}`)
+                .cookie(cookieNames.RefreshToken, refreshToken, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "strict",
+                    maxAge: 20 * 24 * 3600 * 1000
+                })
+                .json({
+                    success: true,
+                    message: authMessages.UserLoginSuccessfully
+                });
         } catch (error) {
             next(error);
+        }
+    }
+
+    async refreshTokens(req, res, next) {
+        try {
+            const oldRefreshToken = req.cookies?.[cookieNames.RefreshToken];
+            const { accessToken, refreshToken } = await this.#Service.refreshTokens(oldRefreshToken);
+
+            return res.status(201)
+                .set("Authorization", `Bearer ${accessToken}`)
+                .cookie(cookieNames.RefreshToken, refreshToken, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "strict"
+                })
+                .json({
+                    success: true,
+                    message: authMessages.AccessTokenRefreshed
+                });
+        } catch (error) {
+            next(error)
         }
     }
 }
