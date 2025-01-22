@@ -13,7 +13,7 @@ const User = sequelize.define("user", {
         }
     },
     hashedPassword: {
-        type: DataTypes.STRING(128),
+        type: DataTypes.STRING(161),
         allowNull: false
     },
     firstName: {

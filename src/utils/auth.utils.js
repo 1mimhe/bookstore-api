@@ -5,11 +5,28 @@ async function hashPassword(password) {
     return new Promise((resolve, reject) => {
         crypto.pbkdf2(password, salt, 1000, 64, "sha512", (err, derivedKey) => {
             if (err) reject(err);
-            resolve(derivedKey.toString("hex"));
+            resolve(`${salt}${derivedKey.toString("hex")}`);
+        });
+    });
+}
+
+async function verifyPassword(password, hashedPassword) {
+    return new Promise((resolve, reject) => {
+        const [salt, hash] = hashedPassword.split(":");
+
+        if (!salt || !hash) {
+            reject(new Error('Stored hash is in invalid format.'));
+        }
+
+        crypto.pbkdf2(password, salt, 1000, 64, "sha512", (err, derivedKey) => {
+            if (err) reject(err);
+            const newHash = derivedKey.toString("hex");
+            resolve(hash === newHash);
         });
     });
 }
 
 module.exports = {
-    hashPassword
+    hashPassword,
+    verifyPassword
 }

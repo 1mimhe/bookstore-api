@@ -1,22 +1,34 @@
 const Ajv = require('ajv');
 const addFormats = require('ajv-formats');
-const ajv = new Ajv();
+const ajv = new Ajv({ useDefaults: true, removeAdditional: true });
 addFormats(ajv);
+
+function removeEmptyValues(obj) {
+    if (!obj || typeof obj !== 'object') return;
+
+    Object.keys(obj).forEach(key => {
+        const value = obj[key];
+        if (value && typeof value === 'object') {
+            removeEmptyValues(value);
+            if (Object.keys(value).length === 0) {
+                delete obj[key];
+            }
+        } else if (value === undefined || value === null || value === '') {
+            delete obj[key];
+        }
+    });
+}
 
 ajv.addKeyword({
     keyword: 'removeEmpty',
     modifying: true,
-    type: 'object',
-    compile: () => (data) => {
-      if (data && typeof data === 'object') {
-        Object.keys(data).forEach(key => {
-            if (data[key] === undefined || data[key] === null || data[key] === "") {
-                delete data[key];
-            }
-        });
-      }
-      return true;
-    },
+    schema: false,
+    validate: function (_, data) {
+        if (data && typeof data === 'object') {
+            removeEmptyValues(data);
+        }
+        return true;
+    }
 });
 
 ajv.addFormat('username', {

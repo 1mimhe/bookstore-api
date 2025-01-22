@@ -1,12 +1,12 @@
 {
-    "openapi": "3.0.1",
-    "info": {
-      "title": "Tourism-Api",
-      "description": "Tourism-App Api documentation.",
-      "version": "1.0.0"
-    },
-    "paths": {
-      "/api/auth/registration": {
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Tourism-Api",
+    "description": "Tourism-App Api documentation.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/auth/registration": {
       "post": {
         "summary": "create a new user.",
         "tags": [
@@ -32,9 +32,36 @@
           }
         }
       }
-    }
     },
-    "components": {
+    "/api/auth/login": {
+      "post": {
+        "summary": "login user.",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User login successfully."
+          }
+        }
+      }
+    }
+  },
+  "components": {
     "schemas": {
       "UserRegistration": {
         "type": "object",
@@ -60,6 +87,21 @@
             "type": "string"
           },
           "email": {
+            "type": "string"
+          }
+        }
+      },
+      "UserLogin": {
+        "type": "object",
+        "required": [
+          "identifier",
+          "password"
+        ],
+        "properties": {
+          "identifier": {
+            "type": "string"
+          },
+          "password": {
             "type": "string"
           }
         }
