@@ -48,16 +48,17 @@ class AuthController {
     }
 
     async refreshTokens(req, res, next) {
-        try {
+        try {            
             const oldRefreshToken = req.cookies?.[cookieNames.RefreshToken];
             const { accessToken, refreshToken } = await this.#Service.refreshTokens(oldRefreshToken);
-
+            
             return res.status(201)
                 .set("Authorization", `Bearer ${accessToken}`)
                 .cookie(cookieNames.RefreshToken, refreshToken, {
                     httpOnly: true,
                     secure: true,
-                    sameSite: "strict"
+                    sameSite: "strict",
+                    maxAge: 20 * 24 * 3600 * 1000
                 })
                 .json({
                     success: true,

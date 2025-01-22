@@ -5,7 +5,7 @@ async function hashPassword(password) {
     return new Promise((resolve, reject) => {
         crypto.pbkdf2(password, salt, 1000, 64, "sha512", (err, derivedKey) => {
             if (err) reject(err);
-            resolve(`${salt}${derivedKey.toString("hex")}`);
+            resolve(`${salt}:${derivedKey.toString("hex")}`);
         });
     });
 }
@@ -20,8 +20,8 @@ async function verifyPassword(password, hashedPassword) {
 
         crypto.pbkdf2(password, salt, 1000, 64, "sha512", (err, derivedKey) => {
             if (err) reject(err);
-            const newHash = derivedKey.toString("hex");
-            resolve(hash === newHash);
+            const isCorrectPassword = derivedKey.toString("hex") === hash;            
+            resolve(isCorrectPassword);
         });
     });
 }
