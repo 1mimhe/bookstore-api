@@ -133,12 +133,12 @@ class AuthService {
         const isAuthorizedBefore = await redisClient.EXISTS(userKey);
         if (!isAuthorizedBefore) throw createHttpError.BadRequest(authMessages.InvalidRefreshToken);
 
-        const accessToken = this.#generateAccessToken(user);
-        const newRefreshToken = this.#generateRefreshToken(user);
+        const accessToken = await this.#generateAccessToken(user);
+        const newRefreshToken = await this.#generateRefreshToken(user);
 
         return {
             accessToken,
-            newRefreshToken
+            refreshToken: newRefreshToken 
         }
     }
 }
