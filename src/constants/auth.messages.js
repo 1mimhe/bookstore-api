@@ -4,5 +4,6 @@ module.exports = Object.freeze({
     InvalidCredentials: "Invalid User credentials.",
     InvalidRefreshToken: "Invalid Refresh Token.",
     InvalidAccessToken: "Invalid Access Token.",
-    UserLoginSuccessfully: "User login successfully."
+    UserLoginSuccessfully: "User login successfully.",
+    AccessTokenRefreshed: "Access Token refreshed successfully."
 });

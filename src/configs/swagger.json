@@ -33,7 +33,7 @@
         }
       }
     },
-    "/api/auth/login": {
+    "/api/auth/loginUser": {
       "post": {
         "summary": "login user.",
         "tags": [
@@ -56,6 +56,19 @@
         "responses": {
           "201": {
             "description": "User login successfully."
+          }
+        }
+      }
+    },
+    "/api/auth/refresh-token": {
+      "post": {
+        "summary": "refresh access token.",
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "201": {
+            "description": "Access Token refreshed successfully."
           }
         }
       }
