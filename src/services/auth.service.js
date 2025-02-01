@@ -31,22 +31,20 @@ class AuthService {
         delete user.password;
 
         const whereClause = [{ username: user.username }];
-        if (user?.email) whereClause.push({ '$Contact.email$': user.email });
-        if (user?.phoneNumber) whereClause.push({ '$Contact.phoneNumber$': user.phoneNumber });
+        if (user?.email) whereClause.push({ '$contact.email$': user.email });
+        if (user?.phoneNumber) whereClause.push({ '$contact.phoneNumber$': user.phoneNumber });
 
         const result = await sequelize.transaction(async t => {
-            const existingUser = await this.#User.findOne({
+            const existingUser = await this.#User.count({
                 where: {
                     [Op.or]: whereClause
                 },
                 include: [{
-                    model: this.#Contact,
-                    required: true
-                }],
-                transaction: t
+                    model: this.#Contact
+                }]
             });
 
-            if (existingUser) {
+            if (existingUser > 0) {
                 throw createHttpError.BadRequest(authMessages.UserAlreadyExists);
             }
 
@@ -99,7 +97,7 @@ class AuthService {
 
         let expirationTime = 20 * 24 * 3600; // 20 days in seconds
         if (isAuthorizedBefore) {
-            const oldRefreshToken = (await redisClient.HGETALL(userKey)).refreshToken;
+            const { refreshToken: oldRefreshToken } = await redisClient.HGETALL(userKey);
             const decodedOldRefreshToken = jwt.verify(oldRefreshToken, jwtRefreshSecretKey);
             expirationTime = decodedOldRefreshToken.exp - Math.floor(Date.now() / 1000);
         }

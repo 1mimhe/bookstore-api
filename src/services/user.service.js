@@ -19,8 +19,8 @@ class UserService {
             where: {
                 [Op.or]: [
                     { username: identifier },
-                    { '$Contact.email$': identifier },
-                    { '$Contact.phoneNumber$': identifier },
+                    { '$contact.email$': identifier },
+                    { '$contact.phoneNumber$': identifier },
                 ]
             },
             include: [{
