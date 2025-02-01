@@ -10,6 +10,7 @@ const { hashPassword, verifyPassword } = require("../utils/auth.utils");
 const { registrationValidator } = require("../validators/auth.validators");
 const { getUserByIdentifier } = require("./user.service");
 const redisClient = require("../configs/redis.config");
+const { attribute } = require("@sequelize/core/_non-semver-use-at-your-own-risk_/expression-builders/attribute.js");
 
 class AuthService {
     #User;
@@ -35,18 +36,16 @@ class AuthService {
         if (user?.phoneNumber) whereClause.push({ '$contact.phoneNumber$': user.phoneNumber });
 
         const result = await sequelize.transaction(async t => {
-            const existingUser = await this.#User.findOne({
+            const existingUser = await this.#User.count({
                 where: {
                     [Op.or]: whereClause
                 },
                 include: [{
-                    model: this.#Contact,
-                    required: true
-                }],
-                transaction: t
+                    model: this.#Contact
+                }]
             });
 
-            if (existingUser) {
+            if (existingUser > 0) {
                 throw createHttpError.BadRequest(authMessages.UserAlreadyExists);
             }
 
