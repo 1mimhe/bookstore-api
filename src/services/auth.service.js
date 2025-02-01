@@ -10,7 +10,6 @@ const { hashPassword, verifyPassword } = require("../utils/auth.utils");
 const { registrationValidator } = require("../validators/auth.validators");
 const { getUserByIdentifier } = require("./user.service");
 const redisClient = require("../configs/redis.config");
-const { attribute } = require("@sequelize/core/_non-semver-use-at-your-own-risk_/expression-builders/attribute.js");
 
 class AuthService {
     #User;

@@ -26,8 +26,7 @@ class UserService {
             include: [{
                 model: this.#Contact
             }],
-            raw: true,
-            logging: console.log
+            raw: true
         });
     }
 }
