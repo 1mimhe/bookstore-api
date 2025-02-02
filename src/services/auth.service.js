@@ -80,7 +80,8 @@ class AuthService {
         if (!isCorrectPassword) {
             throw createHttpError.BadRequest(authMessages.InvalidCredentials);
         }
-
+        console.log(redisClient);
+        
         const refreshToken = await this.#generateRefreshToken(user);
         const accessToken = await this.#generateAccessToken(user);
         
@@ -92,24 +93,12 @@ class AuthService {
 
     async #generateRefreshToken(user) {
         const jwtRefreshSecretKey = process.env.JWT_REFRESH_SECRET_KEY;
-        const userKey = `user:${user.id}`;
-        const isAuthorizedBefore = await redisClient.EXISTS(userKey);
-
         let expirationTime = 20 * 24 * 3600; // 20 days in seconds
-        if (isAuthorizedBefore) {
-            const { refreshToken: oldRefreshToken } = await redisClient.HGETALL(userKey);
-            const decodedOldRefreshToken = jwt.verify(oldRefreshToken, jwtRefreshSecretKey);
-            expirationTime = decodedOldRefreshToken.exp - Math.floor(Date.now() / 1000);
-        }
-
         const payload = {
             username: user.username
         }
-        const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET_KEY, { expiresIn: expirationTime });
 
-        await redisClient.HSET(userKey, "refreshToken", refreshToken);
-        await redisClient.EXPIRE(userKey, expirationTime);
-
+        const refreshToken = jwt.sign(payload, jwtRefreshSecretKey, { expiresIn: expirationTime });
         return refreshToken;
     }
 
@@ -117,27 +106,9 @@ class AuthService {
         const payload = {
             username: user.username
         }
+
         const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET_KEY, { expiresIn: "1h" });
         return accessToken;
-    }
-
-    async refreshTokens(refreshToken) {
-        const decodedRefreshToken = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET_KEY);
-
-        const user = await getUserByIdentifier(decodedRefreshToken.username);
-        if (!user) throw createHttpError.BadRequest(authMessages.InvalidRefreshToken);
-
-        const userKey = `user:${user.id}`;
-        const isAuthorizedBefore = await redisClient.EXISTS(userKey);
-        if (!isAuthorizedBefore) throw createHttpError.BadRequest(authMessages.InvalidRefreshToken);
-
-        const accessToken = await this.#generateAccessToken(user);
-        const newRefreshToken = await this.#generateRefreshToken(user);
-
-        return {
-            accessToken,
-            refreshToken: newRefreshToken 
-        }
     }
 }
 
