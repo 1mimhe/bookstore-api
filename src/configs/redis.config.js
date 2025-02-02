@@ -1,14 +1,24 @@
 const { createClient } = require("redis");
 
-const redisClient = createClient({
-    socket: {
-        host: process.env.HOSTNAME,
-        port: +process.env.REDIS_PORT
-    }
-});
+let isConnectionSuccess = true;
 
-redisClient.on("error", err => console.log("Redis Client Error: ", err.message));
-redisClient.on("connect", () => console.log("Redis Connected."));
-redisClient.connect();
+function redisConfig() {
+    const redisClient = createClient({
+        socket: {
+            host: process.env.HOSTNAME,
+            port: +process.env.REDIS_PORT
+        }
+    });
 
-module.exports = redisClient;
+    redisClient.on("error", err => {
+        if (!isConnectionSuccess) return;
+        isConnectionSuccess = false;
+        console.log("Redis Client Error: ", err.message);
+    });
+    redisClient.on("connect", () => console.log("Redis Connected."));
+
+    redisClient.connect();
+    return redisClient;
+}
+
+module.exports = redisConfig();

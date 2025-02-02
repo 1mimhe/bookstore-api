@@ -29,15 +29,10 @@ class AuthController {
         try {
             const { identifier, password } = req.body;
             const { accessToken, refreshToken } = await this.#Service.loginUser({ identifier, password });
-            
+
+            req.session.refreshToken = refreshToken;
             return res.status(201)
                 .set("Authorization", `Bearer ${accessToken}`)
-                .cookie(cookieNames.RefreshToken, refreshToken, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: "strict",
-                    maxAge: 20 * 24 * 3600 * 1000
-                })
                 .json({
                     success: true,
                     message: authMessages.UserLoginSuccessfully
@@ -50,20 +45,14 @@ class AuthController {
     async refreshTokens(req, res, next) {
         try {            
             const oldRefreshToken = req.cookies?.[cookieNames.RefreshToken];
-            const { accessToken, refreshToken } = await this.#Service.refreshTokens(oldRefreshToken);
+            // const { accessToken, refreshToken } = await this.#Service.refreshTokens(oldRefreshToken);
             
-            return res.status(201)
-                .set("Authorization", `Bearer ${accessToken}`)
-                .cookie(cookieNames.RefreshToken, refreshToken, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: "strict",
-                    maxAge: 20 * 24 * 3600 * 1000
-                })
-                .json({
-                    success: true,
-                    message: authMessages.AccessTokenRefreshed
-                });
+            // return res.status(201)
+            //     .set("Authorization", `Bearer ${accessToken}`)
+            //     .json({
+            //         success: true,
+            //         message: authMessages.AccessTokenRefreshed
+            //     });
         } catch (error) {
             next(error)
         }
