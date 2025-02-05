@@ -28,11 +28,19 @@ class AuthController {
     async loginUser(req, res, next) {
         try {
             const { identifier, password } = req.body;
-            const { accessToken, refreshToken } = await this.#Service.loginUser({ identifier, password });
+            const { accessToken, refreshToken, userId } = await this.#Service.loginUser({ identifier, password });
 
             req.session.refreshToken = refreshToken;
+            req.session.userId = userId;
+
             return res.status(201)
                 .set("Authorization", `Bearer ${accessToken}`)
+                .cookie(cookieNames.RefreshToken, refreshToken, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "strict",
+                    maxAge: 20 * 24 * 3600 * 1000
+                })
                 .json({
                     success: true,
                     message: authMessages.UserLoginSuccessfully
@@ -43,18 +51,25 @@ class AuthController {
     }
 
     async refreshTokens(req, res, next) {
-        try {            
-            const oldRefreshToken = req.cookies?.[cookieNames.RefreshToken];
-            // const { accessToken, refreshToken } = await this.#Service.refreshTokens(oldRefreshToken);
-            
-            // return res.status(201)
-            //     .set("Authorization", `Bearer ${accessToken}`)
-            //     .json({
-            //         success: true,
-            //         message: authMessages.AccessTokenRefreshed
-            //     });
+        try {
+            const session = req.session;
+            const oldRefreshToken = req.cookies?.[cookieNames.RefreshToken];            
+            const expirationTime = new Date(session.cookie.expires) - Date.now();
+            const { accessToken, refreshToken } = await this.#Service.refreshTokens(session, oldRefreshToken, expirationTime);
+
+            return res.set("Authorization", `Bearer ${accessToken}`)
+                .cookie(cookieNames.RefreshToken, refreshToken, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "strict",
+                    maxAge: expirationTime
+                })
+                .json({
+                    success: true,
+                    message: authMessages.AccessTokenRefreshed
+                });
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
 }

@@ -9,7 +9,6 @@ const authMessages = require("../constants/auth.messages");
 const { hashPassword, verifyPassword } = require("../utils/auth.utils");
 const { registrationValidator } = require("../validators/auth.validators");
 const { getUserByIdentifier } = require("./user.service");
-const redisClient = require("../configs/redis.config");
 
 class AuthService {
     #User;
@@ -71,44 +70,50 @@ class AuthService {
 
     async loginUser({ identifier, password }) {
         const user = await getUserByIdentifier(identifier);
-        
+
         if (!user) {
             throw createHttpError.BadRequest(authMessages.InvalidCredentials);
         }
 
-        const isCorrectPassword = await verifyPassword(password, user.hashedPassword);        
+        const isCorrectPassword = await verifyPassword(password, user.hashedPassword);
         if (!isCorrectPassword) {
             throw createHttpError.BadRequest(authMessages.InvalidCredentials);
         }
-        console.log(redisClient);
-        
-        const refreshToken = await this.#generateRefreshToken(user);
-        const accessToken = await this.#generateAccessToken(user);
-        
+
+        const refreshToken = await this.#generateRefreshToken({ username: user.username });
+        const accessToken = await this.#generateAccessToken({ username: user.username });
+
         return {
             refreshToken,
-            accessToken
+            accessToken,
+            userId: user.id
         };
     }
 
-    async #generateRefreshToken(user) {
-        const jwtRefreshSecretKey = process.env.JWT_REFRESH_SECRET_KEY;
-        let expirationTime = 20 * 24 * 3600; // 20 days in seconds
-        const payload = {
-            username: user.username
-        }
+    async #generateRefreshToken(payload, expiresIn = 64_800) {
+        expiresIn = expiresIn > 64_800 ? 64_800 : expiresIn;
 
-        const refreshToken = jwt.sign(payload, jwtRefreshSecretKey, { expiresIn: expirationTime });
+        const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET_KEY, { expiresIn });
         return refreshToken;
     }
 
-    async #generateAccessToken(user) {
-        const payload = {
-            username: user.username
-        }
-
-        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET_KEY, { expiresIn: "1h" });
+    async #generateAccessToken(payload) {
+        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET_KEY, { expiresIn: "20min" });
         return accessToken;
+    }
+
+    async refreshTokens(session, oldRefreshToken, expirationTime) {        
+        if (session?.refreshToken === oldRefreshToken) {
+            const { username } = jwt.verify(oldRefreshToken, process.env.JWT_REFRESH_SECRET_KEY);
+            const newRefreshToken = await this.#generateRefreshToken({ username }, Math.trunc(expirationTime / 1000));
+            const newAccessToken = await this.#generateRefreshToken({ username });
+            
+            session.refreshToken = newRefreshToken;
+            return {
+                accessToken: newAccessToken,
+                refreshToken: newRefreshToken
+            };
+        } else throw createHttpError.Unauthorized(authMessages.InvalidRefreshToken);
     }
 }
 

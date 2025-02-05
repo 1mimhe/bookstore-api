@@ -9,14 +9,14 @@ function sessionConfig(redisClient) {
     });
 
     const session = cookieSession({
-        name: cookieNames.RefreshToken,
+        name: cookieNames.SessionID,
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
         store: redisStore,
         cookie: {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV !== "development",
             sameSite: "strict",
             maxAge: 20 * 24 * 3600 * 1000
         }
