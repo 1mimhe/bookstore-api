@@ -2,6 +2,7 @@ const autoBind = require("auto-bind");
 const AuthService = require("../services/auth.service");
 const authMessages = require("../constants/auth.messages");
 const cookieNames = require("../constants/cookie.names");
+const createHttpError = require("http-errors");
 
 class AuthController {
     #Service;
@@ -13,7 +14,7 @@ class AuthController {
 
     async registrationUser(req, res, next) {
         try {
-            const { username, password, firstName, lastName, phoneNumber, email } = req.body;                        
+            const { username, password, firstName, lastName, phoneNumber, email } = req.body;
             await this.#Service.registrationUser({ username, password, firstName, lastName, phoneNumber, email });
 
             return res.status(200).json({
@@ -29,6 +30,10 @@ class AuthController {
         try {
             const { identifier, password } = req.body;
             const { accessToken, refreshToken, userId } = await this.#Service.loginUser({ identifier, password });
+
+            if (req.session.refreshToken) {
+                throw createHttpError.BadRequest(authMessages.UserAlreadyAuthorized);
+            }
 
             req.session.refreshToken = refreshToken;
             req.session.userId = userId;
@@ -53,7 +58,7 @@ class AuthController {
     async refreshTokens(req, res, next) {
         try {
             const session = req.session;
-            const oldRefreshToken = req.cookies?.[cookieNames.RefreshToken];            
+            const oldRefreshToken = req.cookies?.[cookieNames.RefreshToken];
             const expirationTime = new Date(session.cookie.expires) - Date.now();
             const { accessToken, refreshToken } = await this.#Service.refreshTokens(session, oldRefreshToken, expirationTime);
 
@@ -68,6 +73,24 @@ class AuthController {
                     success: true,
                     message: authMessages.AccessTokenRefreshed
                 });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    logoutUser(req, res, next) {
+        try {
+            if (!req.session?.refreshToken) {
+                throw createHttpError.BadRequest(authMessages.UserNotAuthorized);
+            }
+
+            req.session.destroy();
+            res.clearCookie(cookieNames.RefreshToken);
+            res.clearCookie(cookieNames.SessionID);
+            return res.json({
+                success: true,
+                message: authMessages.UserLoggedOut
+            });
         } catch (error) {
             next(error);
         }

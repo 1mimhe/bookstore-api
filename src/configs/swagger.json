@@ -72,6 +72,19 @@
                     }
                 }
             }
+        },
+        "/auth/logout": {
+            "post": {
+                "summary": "logout user.",
+                "tags": [
+                    "Auth"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User logged out successfully."
+                    }
+                }
+            }
         }
     },
     "components": {
