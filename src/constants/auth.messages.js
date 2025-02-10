@@ -8,5 +8,6 @@ module.exports = Object.freeze({
     InvalidAccessToken: "Invalid access token. Refresh it or authorize first.",
     UserAlreadyAuthorized: "User already authorized. Logout first.",
     UserNotAuthorized: "User unauthorized. Login first.",
-    UserLoggedOut: "User logged out successfully."
+    UserLoggedOut: "User logged out successfully.",
+    MissingAccessToken: "Access token is required but was not provided. Please include a valid access token in the request headers."
 });

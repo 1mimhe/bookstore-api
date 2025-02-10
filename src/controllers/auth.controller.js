@@ -3,6 +3,7 @@ const AuthService = require("../services/auth.service");
 const authMessages = require("../constants/auth.messages");
 const cookieNames = require("../constants/cookie.names");
 const createHttpError = require("http-errors");
+const headerNames = require("../constants/header.names");
 
 class AuthController {
     #Service;
@@ -39,7 +40,7 @@ class AuthController {
             req.session.userId = userId;
 
             return res.status(201)
-                .set("Authorization", `Bearer ${accessToken}`)
+                .set(headerNames.Auth, `Bearer ${accessToken}`)
                 .cookie(cookieNames.RefreshToken, refreshToken, {
                     httpOnly: true,
                     secure: true,
@@ -62,7 +63,7 @@ class AuthController {
             const expirationTime = new Date(session.cookie.expires) - Date.now();
             const { accessToken, refreshToken } = await this.#Service.refreshTokens(session, oldRefreshToken, expirationTime);
 
-            return res.set("Authorization", `Bearer ${accessToken}`)
+            return res.set(headerNames.Auth, `Bearer ${accessToken}`)
                 .cookie(cookieNames.RefreshToken, refreshToken, {
                     httpOnly: true,
                     secure: true,
