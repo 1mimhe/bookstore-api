@@ -1,3 +1,4 @@
 module.exports = Object.freeze({
-    RefreshToken: "Refresh-Token"
+    RefreshToken: "refresh-token",
+    SessionID: "session-id"
 });

@@ -90,8 +90,8 @@ class AuthService {
         };
     }
 
-    async #generateRefreshToken(payload, expiresIn = 604_800) {
-        expiresIn = expiresIn > 604_800 ? 604_800 : expiresIn;
+    async #generateRefreshToken(payload, expiresIn = 64_800) {
+        expiresIn = expiresIn > 64_800 ? 64_800 : expiresIn;
 
         const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET_KEY, { expiresIn });
         return refreshToken;
@@ -106,7 +106,7 @@ class AuthService {
         if (session?.refreshToken === oldRefreshToken) {
             const { username } = jwt.verify(oldRefreshToken, process.env.JWT_REFRESH_SECRET_KEY);
             const newRefreshToken = await this.#generateRefreshToken({ username }, Math.trunc(expirationTime / 1000));
-            const newAccessToken = await this.#generateAccessToken({ username });
+            const newAccessToken = await this.#generateRefreshToken({ username });
             
             session.refreshToken = newRefreshToken;
             return {

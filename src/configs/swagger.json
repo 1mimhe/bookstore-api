@@ -72,6 +72,40 @@
                     }
                 }
             }
+        },
+        "/auth/logout": {
+            "post": {
+                "summary": "logout user.",
+                "tags": [
+                    "Auth"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User logged out successfully."
+                    }
+                }
+            }
+        },
+        "/user/me": {
+            "get": {
+                "summary": "get current user details.",
+                "tags": [
+                    "User"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User details retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -118,6 +152,13 @@
                         "type": "string"
                     }
                 }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
             }
         }
     }

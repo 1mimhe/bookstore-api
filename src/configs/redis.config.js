@@ -1,24 +1,29 @@
 const { createClient } = require("redis");
 
-let isConnectionSuccess = true;
+class RedisClient {
+    static #instance = null;
+    static #isConnectionSuccess = true;
 
-function redisConfig() {
-    const redisClient = createClient({
-        socket: {
-            host: process.env.HOSTNAME,
-            port: +process.env.REDIS_PORT
-        }
-    });
-
-    redisClient.on("error", err => {
-        if (!isConnectionSuccess) return;
-        isConnectionSuccess = false;
-        console.log("Redis Client Error: ", err.message);
-    });
-    redisClient.on("connect", () => console.log("Redis Connected."));
-
-    redisClient.connect();
-    return redisClient;
+    static getInstance() {
+        if (this.#instance) return this.#instance;
+        
+        this.#instance = createClient({
+            socket: {
+                host: process.env.HOSTNAME,
+                port: +process.env.REDIS_PORT
+            }
+        });
+    
+        this.#instance.on("error", err => {
+            if (!this.#isConnectionSuccess) return;
+            this.#isConnectionSuccess = false;
+            console.log("Redis Client Error: ", err.message);
+        });
+        this.#instance.on("connect", () => console.log("Redis Connected."));
+    
+        this.#instance.connect();
+        return this.#instance;
+    }
 }
 
-module.exports = redisConfig();
+module.exports = RedisClient.getInstance();
