@@ -1,15 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const { notFoundError, allErrorHandler } = require("./src/middlewares/errorHandler.middleware");
-const { SwaggerConfig } = require("./src/configs/swagger.config");
+const { notFoundError, allErrorHandler } = require("./middlewares/errorHandler.middleware");
+const { SwaggerConfig } = require("./config/swagger.config");
 
-require("./src/configs/env.config"); // Config environment
+require("./config/env.config"); // Config environment
 const app = express();
-require("./src/configs/sequelize.config"); // Config DB connection
-require("./src/configs/model.config"); // Models configuration (For development mode)
-const redisClient = require("./src/configs/redis.config"); // Config Redis
-const session = require("./src/configs/session.config")(redisClient);
+require("./config/sequelize.config"); // Config DB connection
+const redisClient = require("./config/redis.config"); // Config Redis
+const session = require("./config/session.config")(redisClient);
 
 // Setup application
 app.use(cors());
@@ -19,7 +18,7 @@ app.use(cookieParser(process.env.COOKIE_PRIVATE_KEY));
 app.use(session);
 
 // Routers
-const allRouters = require("./src/routers/all.router");
+const allRouters = require("./routers/all.router");
 app.use(allRouters);
 SwaggerConfig(app); // Swagger configuration
 app.use(notFoundError);

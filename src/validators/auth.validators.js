@@ -1,4 +1,4 @@
-const ajv = require("../configs/ajv.config");
+const ajv = require("../config/ajv.config");
 
 function registrationValidator() {
     const schema = {

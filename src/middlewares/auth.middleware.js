@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const createHttpError = require("http-errors");
 const headerNames = require("../constants/header.names");
 const authMessages = require("../constants/auth.messages");
-const User = require("../models/user.model");
+const User = require("../db/models/user.model");
 
 async function authorization(req, res, next) {
     try {

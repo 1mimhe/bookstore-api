@@ -1,5 +1,5 @@
 const { DataTypes } = require("@sequelize/core");
-const sequelize = require("../configs/sequelize.config");
+const sequelize = require("../../config/sequelize.config");
 
 const Contact = sequelize.define("contact", {
     phoneNumber: {
