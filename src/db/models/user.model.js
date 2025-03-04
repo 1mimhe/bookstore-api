@@ -1,6 +1,5 @@
 const { DataTypes } = require("@sequelize/core");
 const sequelize = require("../../config/sequelize.config");
-const Contact = require("./contact.model");
 
 const User = sequelize.define("user", {
     username: {
@@ -48,10 +47,8 @@ const User = sequelize.define("user", {
         }
     }
 }, {
+    timestamps: true,
     paranoid: true
 });
-
-User.hasOne(Contact);
-Contact.belongsTo(User);
 
 module.exports = User;

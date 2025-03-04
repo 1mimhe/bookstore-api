@@ -1,7 +1,6 @@
 const autoBind = require("auto-bind");
 const { Op } = require("@sequelize/core");
-const User = require("../db/models/user.model");
-const Contact = require("../db/models/contact.model");
+const { User, Contact } = require("../db/models/associations");
 
 class UserService {
     #User;

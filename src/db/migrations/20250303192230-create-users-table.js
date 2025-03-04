@@ -2,53 +2,53 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('users', {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable("users", {
       id: {
-        allowNull: false,
-        autoIncrement: true,
+        type: Sequelize.INTEGER,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        autoIncrement: true,
+        allowNull: false,
       },
       username: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        unique: true,
       },
       hashedPassword: {
         type: Sequelize.STRING(161),
-        allowNull: false
+        allowNull: false,
       },
       firstName: {
         type: Sequelize.STRING(30),
-        allowNull: false
+        allowNull: false,
       },
       lastName: {
-        type: Sequelize.STRING(30)
+        type: Sequelize.STRING(30),
       },
       bio: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       profilePhoto: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       dateOfBirth: {
-        type: Sequelize.DATEONLY
+        type: Sequelize.DATEONLY,
       },
       status: {
-        type: Sequelize.STRING(20)
+        type: Sequelize.STRING(20),
       },
       createdAt: {
+        type: Sequelize.DATE,
         allowNull: false,
-        type: Sequelize.DATE
       },
       updatedAt: {
+        type: Sequelize.DATE,
         allowNull: false,
-        type: Sequelize.DATE
       },
       deletedAt: {
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
 

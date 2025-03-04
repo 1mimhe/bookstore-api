@@ -25,6 +25,9 @@ const Contact = sequelize.define("contact", {
         type: DataTypes.BOOLEAN,
         defaultValue: false
     }
+}, {
+    timestamps: true,
+    paranoid: true
 });
 
 module.exports = Contact;

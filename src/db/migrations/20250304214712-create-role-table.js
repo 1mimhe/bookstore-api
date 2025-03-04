@@ -3,29 +3,23 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("contacts", {
+    await queryInterface.createTable("roles", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
       },
-      phoneNumber: {
-        type: Sequelize.STRING(11),
+      name: {
+        type: Sequelize.ENUM(
+          'customer',
+          "admin",
+          "content-manager",
+          "inventory-manager",
+          "order-manager",
+          "publisher"
+        ),
         allowNull: false,
-        unique: true,
-      },
-      isVerifiedPhoneNumber: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-      },
-      email: {
-        type: Sequelize.STRING(50),
-        unique: true,
-      },
-      isVerifiedEmail: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -51,7 +45,7 @@ module.exports = {
     });
   },
 
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('contacts');
-  }
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable("Roles");
+  },
 };

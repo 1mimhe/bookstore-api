@@ -2,9 +2,8 @@ const autoBind = require("auto-bind");
 const { Op } = require("@sequelize/core");
 const createHttpError = require("http-errors");
 const jwt = require("jsonwebtoken");
-const User = require("../db/models/user.model");
+const { User, Contact, Role } = require("../db/models/associations");
 const sequelize = require("../config/sequelize.config");
-const Contact = require("../db/models/contact.model");
 const authMessages = require("../constants/auth.messages");
 const { hashPassword, verifyPassword } = require("../utils/auth.utils");
 const { registrationValidator } = require("../validators/auth.validators");
@@ -13,15 +12,17 @@ const { getUserByIdentifier } = require("./user.service");
 class AuthService {
     #User;
     #Contact;
+    #Role;
 
     constructor() {
         autoBind(this);
 
         this.#User = User;
         this.#Contact = Contact;
+        this.#Role = Role;
     }
 
-    async registrationUser(user) {
+    async registrationUser(user, roles = ['customer']) {
         const validate = registrationValidator();
         const isValid = validate(user);
         if (!isValid) throw createHttpError.BadRequest(validate.errors);
@@ -41,6 +42,8 @@ class AuthService {
                 include: [{
                     model: this.#Contact
                 }]
+            }, {
+                transaction: t
             });
 
             if (existingUser > 0) {
@@ -61,6 +64,14 @@ class AuthService {
                     transaction: t
                 });
             }
+
+            roles = roles.map(role => {
+                return { name: role, userId: newUser.id };
+            });
+            await this.#Role.bulkCreate(roles, {
+                fields: ["name", "userId"],
+                transaction: t
+            });
 
             return true;
         });
@@ -107,7 +118,7 @@ class AuthService {
             const { username } = jwt.verify(oldRefreshToken, process.env.JWT_REFRESH_SECRET_KEY);
             const newRefreshToken = await this.#generateRefreshToken({ username }, Math.trunc(expirationTime / 1000));
             const newAccessToken = await this.#generateAccessToken({ username });
-            
+
             session.refreshToken = newRefreshToken;
             return {
                 accessToken: newAccessToken,
