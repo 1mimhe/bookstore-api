@@ -6,17 +6,33 @@ addFormats(ajv);
 function removeEmptyValues(obj) {
     if (!obj || typeof obj !== 'object') return;
 
-    Object.keys(obj).forEach(key => {
-        const value = obj[key];
-        if (value && typeof value === 'object') {
-            removeEmptyValues(value);
-            if (Object.keys(value).length === 0) {
-                delete obj[key];
-            }
-        } else if (value === undefined || value === null || value === '') {
-            delete obj[key];
+    const stack = [{ obj, key: null }];
+    const seen = new WeakSet();
+
+    while (stack.length > 0) {
+        const { obj: currentObj, key } = stack.pop();
+
+        if (seen.has(currentObj)) {
+            continue;
         }
-    });
+        seen.add(currentObj);
+
+        if (key && (currentObj === undefined || currentObj === null || currentObj === '')) {
+            delete obj[key];
+            continue;
+        }
+
+        if (currentObj && typeof currentObj === 'object') {
+            Object.keys(currentObj).forEach(key => {
+                const value = currentObj[key];
+                if (value && typeof value === 'object') {
+                    stack.push({ obj: value, key });
+                } else if (value === undefined || value === null || value === '') {
+                    delete currentObj[key];
+                }
+            });
+        }
+    }
 }
 
 ajv.addKeyword({

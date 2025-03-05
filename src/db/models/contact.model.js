@@ -1,5 +1,5 @@
 const { DataTypes } = require("@sequelize/core");
-const sequelize = require("../configs/sequelize.config");
+const sequelize = require("../../config/sequelize.config");
 
 const Contact = sequelize.define("contact", {
     phoneNumber: {
@@ -25,6 +25,15 @@ const Contact = sequelize.define("contact", {
         type: DataTypes.BOOLEAN,
         defaultValue: false
     }
+}, {
+    timestamps: true,
+    paranoid: true,
+    indexes: [
+        {
+            name: "username_index",
+            fields: ["username"]
+        }
+    ]
 });
 
 module.exports = Contact;

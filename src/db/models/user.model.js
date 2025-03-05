@@ -1,6 +1,5 @@
 const { DataTypes } = require("@sequelize/core");
-const sequelize = require("../configs/sequelize.config");
-const Contact = require("./contact.model");
+const sequelize = require("../../config/sequelize.config");
 
 const User = sequelize.define("user", {
     username: {
@@ -29,8 +28,9 @@ const User = sequelize.define("user", {
             isAlpha: true
         }
     },
-    bio: {
-        type: DataTypes.TEXT
+    gender: {
+        type: DataTypes.ENUM('male', 'female', 'other'),
+        allowNull: false
     },
     profilePhoto: {
         type: DataTypes.TEXT,
@@ -48,10 +48,14 @@ const User = sequelize.define("user", {
         }
     }
 }, {
-    paranoid: true
+    timestamps: true,
+    paranoid: true,
+    indexes: [
+        {
+            name: "username_index",
+            fields: ["username"]
+        }
+    ]
 });
-
-User.hasOne(Contact);
-Contact.belongsTo(User);
 
 module.exports = User;

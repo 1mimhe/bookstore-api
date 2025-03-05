@@ -3,7 +3,6 @@ const AuthService = require("../services/auth.service");
 const authMessages = require("../constants/auth.messages");
 const cookieNames = require("../constants/cookie.names");
 const createHttpError = require("http-errors");
-const headerNames = require("../constants/header.names");
 
 class AuthController {
     #Service;
@@ -39,9 +38,7 @@ class AuthController {
             req.session.refreshToken = refreshToken;
             req.session.userId = userId;
 
-            return res.status(201)
-                .set(headerNames.Auth, `Bearer ${accessToken}`)
-                .cookie(cookieNames.RefreshToken, refreshToken, {
+            return res.cookie(cookieNames.RefreshToken, refreshToken, {
                     httpOnly: true,
                     secure: true,
                     sameSite: "strict",
@@ -49,7 +46,8 @@ class AuthController {
                 })
                 .json({
                     success: true,
-                    message: authMessages.UserLoginSuccessfully
+                    message: authMessages.UserLoginSuccessfully,
+                    accessToken
                 });
         } catch (error) {
             next(error);
@@ -63,8 +61,7 @@ class AuthController {
             const expirationTime = new Date(session.cookie.expires) - Date.now();
             const { accessToken, refreshToken } = await this.#Service.refreshTokens(session, oldRefreshToken, expirationTime);
 
-            return res.set(headerNames.Auth, `Bearer ${accessToken}`)
-                .cookie(cookieNames.RefreshToken, refreshToken, {
+            return res.cookie(cookieNames.RefreshToken, refreshToken, {
                     httpOnly: true,
                     secure: true,
                     sameSite: "strict",
@@ -72,7 +69,8 @@ class AuthController {
                 })
                 .json({
                     success: true,
-                    message: authMessages.AccessTokenRefreshed
+                    message: authMessages.AccessTokenRefreshed,
+                    accessToken
                 });
         } catch (error) {
             next(error);

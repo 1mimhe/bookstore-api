@@ -9,5 +9,6 @@ module.exports = Object.freeze({
     UserAlreadyAuthorized: "User already authorized. Logout first.",
     UserNotAuthorized: "User unauthorized. Login first.",
     UserLoggedOut: "User logged out successfully.",
-    MissingAccessToken: "Access token is required but was not provided. Please include a valid access token in the request headers."
+    MissingAccessToken: "Access token is required but was not provided. Please include a valid access token in the request headers.",
+    AccessDenied: "Access Denied: You do not have the required permissions to perform this action."
 });

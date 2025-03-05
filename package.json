@@ -1,11 +1,13 @@
 {
-  "name": "tourism-api",
+  "name": "bookstore-api",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
-    "pm2": "pm2 start app.js"
+    "start": "nodemon ./src/app.js",
+    "migrate:undo": "npx sequelize-cli db:migrate:undo:all",
+    "migrate:do": "npx sequelize-cli db:migrate",
+    "migrate": "npm run migrate:undo && npm run migrate:do"
   },
   "keywords": [],
   "author": "Mohammad Hosseini",
@@ -28,7 +30,11 @@
     "mysql2": "^3.12.0",
     "nodemon": "^3.1.9",
     "redis": "^4.7.0",
+    "sequelize": "^6.37.5",
     "swagger-ui-express": "^5.0.1",
     "validator": "^13.12.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.6.2"
   }
 }
