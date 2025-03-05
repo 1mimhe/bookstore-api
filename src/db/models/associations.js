@@ -1,6 +1,7 @@
 const User = require("./user.model");
 const Role = require("./role.model");
 const Contact = require("./contact.model");
+const Address = require("./address.model");
 
 // User-Contact
 User.hasOne(Contact, {
@@ -17,6 +18,15 @@ User.hasMany(Role, {
   as: 'roles'
 });
 Role.belongsTo(User, {
+  foreignKey: "userId"
+});
+
+// User-Address
+User.hasMany(Address, {
+  foreignKey: 'userId',
+  as: 'addresses'
+});
+Address.belongsTo(User, {
   foreignKey: "userId"
 });
 

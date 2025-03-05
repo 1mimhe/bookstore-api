@@ -28,8 +28,9 @@ const User = sequelize.define("user", {
             isAlpha: true
         }
     },
-    bio: {
-        type: DataTypes.TEXT
+    gender: {
+        type: DataTypes.ENUM('male', 'female', 'other'),
+        allowNull: false
     },
     profilePhoto: {
         type: DataTypes.TEXT,
@@ -48,7 +49,13 @@ const User = sequelize.define("user", {
     }
 }, {
     timestamps: true,
-    paranoid: true
+    paranoid: true,
+    indexes: [
+        {
+            name: "username_index",
+            fields: ["username"]
+        }
+    ]
 });
 
 module.exports = User;

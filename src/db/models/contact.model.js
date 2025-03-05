@@ -27,7 +27,13 @@ const Contact = sequelize.define("contact", {
     }
 }, {
     timestamps: true,
-    paranoid: true
+    paranoid: true,
+    indexes: [
+        {
+            name: "username_index",
+            fields: ["username"]
+        }
+    ]
 });
 
 module.exports = Contact;

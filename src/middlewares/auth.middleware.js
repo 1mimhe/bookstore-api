@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const createHttpError = require("http-errors");
 const headerNames = require("../constants/header.names");
 const authMessages = require("../constants/auth.messages");
-const User = require("../db/models/user.model");
+const { getUserByIdentifier } = require("../services/user.service");
 
 async function authorization(req, res, next) {
     try {
@@ -13,22 +13,16 @@ async function authorization(req, res, next) {
         try {
             payload = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET_KEY);
         } catch (error) {
-            throw createHttpError.Unauthorized(authMessages.InvalidAccessToken);
+            throw createHttpError.Unauthorized(authMessages.InvalidAccessToken + error.message);
         }
         if (!payload?.username) {
             throw createHttpError.Unauthorized(authMessages.InvalidAccessToken);
         }
 
-        const user = await User.findOne({
-            where: {
-                username: payload.username
-            },
-            attributes: {
-                exclude: ['hashedPassword']
-            },
-            raw: true
-        });
+        const user = await getUserByIdentifier(payload.username,  ['id', 'hashedPassword']);
+        console.log(user);
         if (!user) throw createHttpError.Unauthorized(authMessages.InvalidAccessToken);
+        
         req.user = user;
 
         next();
