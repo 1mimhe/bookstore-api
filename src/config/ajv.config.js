@@ -50,7 +50,8 @@ ajv.addKeyword({
 ajv.addFormat('username', {
     type: 'string',
     validate: (username) => {
-        return /^[a-zA-Z0-9](?!.*[_\-.]{2})[a-zA-Z0-9_\-.]{3,28}[a-zA-Z0-9]$/.test(username);
+        const isValidUsername = /^[a-zA-Z0-9](?!.*[_\-.]{2})[a-zA-Z0-9_\-.]{3,28}[a-zA-Z0-9]$/.test(username);
+        return isValidUsername;
     }
 });
 
