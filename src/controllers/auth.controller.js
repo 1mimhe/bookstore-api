@@ -39,11 +39,11 @@ class AuthController {
             req.session.userId = userId;
 
             return res.cookie(cookieNames.RefreshToken, refreshToken, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: "strict",
-                    maxAge: 20 * 24 * 3600 * 1000
-                })
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict",
+                maxAge: 20 * 24 * 3600 * 1000
+            })
                 .json({
                     success: true,
                     message: authMessages.UserLoginSuccessfully,
@@ -62,17 +62,23 @@ class AuthController {
             const { accessToken, refreshToken } = await this.#Service.refreshTokens(session, oldRefreshToken, expirationTime);
 
             return res.cookie(cookieNames.RefreshToken, refreshToken, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: "strict",
-                    maxAge: expirationTime
-                })
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict",
+                maxAge: expirationTime
+            })
                 .json({
                     success: true,
                     message: authMessages.AccessTokenRefreshed,
                     accessToken
                 });
         } catch (error) {
+            if (error.status === 401) {
+                req.session.destroy();
+                res.clearCookie(cookieNames.RefreshToken);
+                res.clearCookie(cookieNames.SessionID);
+            }
+
             next(error);
         }
     }
