@@ -35,6 +35,23 @@ class UserController {
             next(error);
         }
     }
+
+    async editUser(req, res, next) {
+        try {
+            const userId = req.user.id;
+            const { username, password, firstName, lastName, phoneNumber, email } = req.body;
+            await this.#Service.editUser(userId, { username, password, firstName, lastName, phoneNumber, email });
+
+            return res.json({
+                success: true,
+                message: userMessages.AddressAddedSuccessfully
+            });
+        } catch (error) {
+            console.log(error);
+            
+            next(error);
+        }
+    }
 }
 
 module.exports = new UserController();

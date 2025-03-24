@@ -16,12 +16,12 @@
                     "content": {
                         "application/x-www-form-urlencoded": {
                             "schema": {
-                                "$ref": "#/components/schemas/UserRegistration"
+                                "$ref": "#/components/schemas/RegistrationUser"
                             }
                         },
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/UserRegistration"
+                                "$ref": "#/components/schemas/RegistrationUser"
                             }
                         }
                     }
@@ -43,12 +43,12 @@
                     "content": {
                         "application/x-www-form-urlencoded": {
                             "schema": {
-                                "$ref": "#/components/schemas/UserLogin"
+                                "$ref": "#/components/schemas/LoginUser"
                             }
                         },
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/UserLogin"
+                                "$ref": "#/components/schemas/LoginUser"
                             }
                         }
                     }
@@ -147,11 +147,43 @@
                     }
                 }
             }
+        },
+        "/user/edit": {
+            "patch": {
+                "summary": "Edit a user.",
+                "tags": [
+                    "User"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditUser"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditUser"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully."
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
-            "UserRegistration": {
+            "RegistrationUser": {
                 "type": "object",
                 "required": [
                     "username",
@@ -180,11 +212,15 @@
                     },
                     "gender": {
                         "type": "string",
-                        "enum": ["male","female","other"]
+                        "enum": [
+                            "male",
+                            "female",
+                            "other"
+                        ]
                     }
                 }
             },
-            "UserLogin": {
+            "LoginUser": {
                 "type": "object",
                 "required": [
                     "identifier",
@@ -232,6 +268,29 @@
                         "type": "string"
                     },
                     "phoneNumber": {
+                        "type": "string"
+                    }
+                }
+            },
+            "EditUser": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "phoneNumber": {
+                        "type": "string"
+                    },
+                    "email": {
                         "type": "string"
                     }
                 }
