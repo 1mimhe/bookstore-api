@@ -15,11 +15,12 @@ class AuthController {
     async registrationUser(req, res, next) {
         try {
             const { username, password, firstName, lastName, phoneNumber, email } = req.body;
-            await this.#Service.registrationUser({ username, password, firstName, lastName, phoneNumber, email });
+            const newUser = await this.#Service.registrationUser({ username, password, firstName, lastName, phoneNumber, email });
 
             return res.status(200).json({
                 success: true,
-                message: authMessages.UserCreated
+                message: authMessages.UserCreated,
+                data: newUser
             });
         } catch (error) {
             next(error);

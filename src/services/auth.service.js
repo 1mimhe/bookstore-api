@@ -24,58 +24,42 @@ class AuthService {
         this.#Role = Role;
     }
 
-    async registrationUser(user, roles = ['customer']) {
+    async registrationUser(userDTO, roles = ['customer']) {
         const validate = registrationValidator();
-        const isValid = validate(user);
+        const isValid = validate(userDTO);
         if (!isValid) throw createHttpError.BadRequest(validate.errors);
 
-        user.hashedPassword = await hashPassword(user.password);
-        delete user.password;
-
-        const whereClause = [{ username: user.username }];
-        if (user?.email) whereClause.push({ '$contact.email$': user.email });
-        if (user?.phoneNumber) whereClause.push({ '$contact.phoneNumber$': user.phoneNumber });
+        userDTO.hashedPassword = await hashPassword(userDTO.password);
+        delete userDTO.password;
 
         const result = await sequelize.transaction(async t => {
-            const existingUser = await this.#User.count({
-                where: {
-                    [Op.or]: whereClause
-                },
-                include: [{
-                    model: this.#Contact
-                }]
-            }, {
-                transaction: t
-            });
-
-            if (existingUser > 0) {
-                throw createHttpError.BadRequest(authMessages.UserAlreadyExists);
-            }
-
-            const newUser = await this.#User.create(user, {
+            const user = await this.#User.create(userDTO, {
                 fields: ["username", "hashedPassword", "firstName", "lastName"],
                 transaction: t
             });
 
-            if (user.phoneNumber || user.email) {
+            let contact;
+            if (userDTO.phoneNumber || userDTO.email) {
                 await this.#Contact.create({
-                    userId: newUser.id,
-                    phoneNumber: user.phoneNumber,
-                    email: user.email
+                    userId: user.id,
+                    phoneNumber: userDTO.phoneNumber,
+                    email: userDTO.email
                 }, {
                     transaction: t
                 });
             }
 
             roles = roles.map(role => {
-                return { name: role, userId: newUser.id };
+                return { name: role, userId: user.id };
             });
             await this.#Role.bulkCreate(roles, {
                 fields: ["name", "userId"],
                 transaction: t
             });
 
-            return true;
+            return {
+                user, contact, roles
+            };
         });
 
         return result;

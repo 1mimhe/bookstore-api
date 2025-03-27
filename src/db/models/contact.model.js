@@ -4,7 +4,6 @@ const sequelize = require("../../config/sequelize.config");
 const Contact = sequelize.define("contact", {
     phoneNumber: {
         type: DataTypes.STRING(11),
-        allowNull: false,
         unique: true,
         validate: {
             isMobilePhone: true
