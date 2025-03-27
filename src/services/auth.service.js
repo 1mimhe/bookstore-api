@@ -100,8 +100,15 @@ class AuthService {
     }
 
     async refreshTokens(session, oldRefreshToken, expirationTime) {
-        if (session?.refreshToken === oldRefreshToken) {
-            const { username } = jwt.verify(oldRefreshToken, process.env.JWT_REFRESH_SECRET_KEY);
+        if (session?.refreshToken && oldRefreshToken 
+            && session?.refreshToken === oldRefreshToken) {
+            let username;
+            try {
+                username = jwt.verify(oldRefreshToken, process.env.JWT_REFRESH_SECRET_KEY).username;
+            } catch (error) {
+                throw new createHttpError.Unauthorized(`${authMessages.InvalidRefreshToken} ${error.message}`);
+            }
+
             const newRefreshToken = await this.#generateRefreshToken({ username }, Math.trunc(expirationTime / 1000));
             const newAccessToken = await this.#generateAccessToken({ username });
 

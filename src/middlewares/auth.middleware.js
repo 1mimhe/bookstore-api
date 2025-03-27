@@ -13,14 +13,13 @@ async function authorization(req, res, next) {
         try {
             payload = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET_KEY);
         } catch (error) {
-            throw createHttpError.Unauthorized(authMessages.InvalidAccessToken + error.message);
+            throw createHttpError.Unauthorized(`${authMessages.InvalidAccessToken} ${error.message}`);
         }
         if (!payload?.username) {
             throw createHttpError.Unauthorized(authMessages.InvalidAccessToken);
         }
 
-        const user = await getUserByIdentifier(payload.username,  ['id', 'hashedPassword']);
-        console.log(user);
+        const user = await getUserByIdentifier(payload.username,  ['hashedPassword']);
         if (!user) throw createHttpError.Unauthorized(authMessages.InvalidAccessToken);
         
         req.user = user;
@@ -35,7 +34,7 @@ async function authorization(req, res, next) {
 function checkRoles(requiredRoles) {
     return async (req, res, next) => {
         try {
-            const hasPermission = req.user.roles.some(userRole => requiredRoles.includes(userRole));
+            const hasPermission = req.user.roles?.some(userRole => requiredRoles.includes(userRole));
 
             if (!hasPermission) {
                 throw createHttpError.Forbidden(authMessages.AccessDenied);
@@ -43,12 +42,13 @@ function checkRoles(requiredRoles) {
 
             next();
         } catch (error) {
-            error.message = `Authorization Error: ${error.message}`;
+            error.message = `Permission Error: ${error.message}`;
             next(error);
         }
     };
 }
 
 module.exports = {
-    authorization
+    authorization,
+    checkRoles
 }
