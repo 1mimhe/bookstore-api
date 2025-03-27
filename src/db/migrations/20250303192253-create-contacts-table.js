@@ -7,8 +7,7 @@ module.exports = {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
+        autoIncrement: true
       },
       phoneNumber: {
         type: Sequelize.STRING(11),

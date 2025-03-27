@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const { notFoundError, allErrorHandler } = require("./middlewares/errorHandler.middleware");
+const { notFoundError, allErrorHandler, errorPreprocessor } = require("./middlewares/errorHandler.middleware");
 const { SwaggerConfig } = require("./config/swagger.config");
 
 require("./config/env.config"); // Config environment
@@ -23,6 +23,7 @@ const allRouters = require("./routers/all.router");
 app.use(allRouters);
 SwaggerConfig(app); // Swagger configuration
 app.use(notFoundError);
+app.use(errorPreprocessor);
 app.use(allErrorHandler);
 
 // Setup Express server
