@@ -5,7 +5,7 @@ module.exports = Object.freeze({
     UserLoginSuccessfully: "User login successfully.",
     AccessTokenRefreshed: "Access Token refreshed successfully.",
     InvalidRefreshToken: "Invalid refresh token. Login first.",
-    InvalidAccessToken: "Invalid access token. Refresh it or authorize first.",
+    InvalidToken: "Invalid or refresh token.",
     UserAlreadyAuthorized: "User already authorized. Logout first or refresh token.",
     UserNotAuthorized: "User unauthorized. Login first.",
     UserLoggedOut: "User logged out successfully.",
