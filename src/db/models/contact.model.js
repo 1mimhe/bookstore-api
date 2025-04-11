@@ -29,8 +29,8 @@ const Contact = sequelize.define("contact", {
     paranoid: true,
     indexes: [
         {
-            name: "username_index",
-            fields: ["username"]
+            name: "userId_index",
+            fields: ["userId"]
         }
     ]
 });
