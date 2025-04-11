@@ -2,6 +2,9 @@ const User = require("./user.model");
 const Role = require("./role.model");
 const Contact = require("./contact.model");
 const Address = require("./address.model");
+const Title = require("./title.model");
+const Book = require("./book.model");
+const Language = require("./language.model");
 
 // User-Contact
 User.hasOne(Contact, {
@@ -27,11 +30,41 @@ User.hasMany(Address, {
   as: 'addresses'
 });
 Address.belongsTo(User, {
-  foreignKey: "userId"
+  foreignKey: 'userId'
+});
+
+// Title-Book
+Title.hasMany(Book, {
+  foreignKey: 'titleId',
+  as: 'books'
+});
+Book.belongsTo(Title, {
+  foreignKey: 'titleId'
+});
+
+// Title-Language
+Title.belongsTo(Language, {
+  foreignKey: 'languageId',
+  as: 'language'
+});
+Language.hasOne(Title, {
+  foreignKey: 'languageId'
+});
+
+// Book-Language
+Book.belongsTo(Language, {
+  foreignKey: 'languageId',
+  as: 'language'
+});
+Language.hasOne(Book, {
+  foreignKey: 'languageId'
 });
 
 module.exports = {
   User,
   Contact,
-  Role
+  Role,
+  Title,
+  Book,
+  Language
 };
