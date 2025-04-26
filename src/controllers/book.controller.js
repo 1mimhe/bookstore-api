@@ -51,6 +51,20 @@ class TitleController {
       next(error);
     }
   }
+
+  async addBook(req, res, next) {
+    try {
+      const { name, anotherName, titleId, languageId, ISBN, quarto, cover,
+        pagesNumber, publishedAt, publishSeries, weight, stock, price } = req.body;
+        console.log(req.body);
+        
+      const newBook = await this.#Service.addBook({ name, anotherName, titleId, languageId, ISBN, quarto, cover,
+                                                pagesNumber, publishedAt, publishSeries, weight, stock, price });
+      return res.status(201).json(newBook);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new TitleController()

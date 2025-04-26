@@ -23,7 +23,6 @@ function addTitleValidator() {
       }
     },
     required: ['name', 'slug'],
-    additionalProperties: false,
   };
 
   return ajv.compile(schema);
@@ -51,13 +50,12 @@ function editTitleValidator() {
         format: 'date'
       }
     },
-    additionalProperties: false
   };
 
   return ajv.compile(schema);
 }
 
-function bookValidator() {
+function addBookValidator() {
   const quartos = [
     'vaziri',
     'roqee',
@@ -85,6 +83,10 @@ function bookValidator() {
       },
       anotherName: {
         type: 'string'
+      },
+      titleId: { 
+        type: 'integer',
+        minimum: 1 
       },
       languageId: {
         type: 'integer'
@@ -124,10 +126,6 @@ function bookValidator() {
         type: 'number',
         minimum: 0
       },
-      titleId: { 
-        type: 'integer',
-        minimum: 1 
-      }
       // publisherId: { 
       //   type: 'integer',
       //   minimum: 1
@@ -138,7 +136,6 @@ function bookValidator() {
       // }
     },
     required: ['name', 'titleId'],
-    additionalProperties: false,
   };
 
   return ajv.compile(schema);
@@ -147,5 +144,5 @@ function bookValidator() {
 module.exports = {
   addTitleValidator,
   editTitleValidator,
-  bookValidator
+  addBookValidator
 }

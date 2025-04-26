@@ -1,5 +1,5 @@
 const createHttpError = require("http-errors");
-const { addTitleValidator, editTitleValidator } = require("../validators/book.validators");
+const { addTitleValidator, editTitleValidator, addBookValidator } = require("../validators/book.validators");
 const autoBind = require("auto-bind");
 const { Title, Book } = require("../db/models/associations");
 const titleMessages = require("../constants/book.messages");
@@ -44,6 +44,14 @@ class BookService {
     const title = await this.getTitleById(titleId);
     Object.keys(titleDTO).forEach(key => title[key] = titleDTO[key]);
     return title.save();
+  }
+
+  async addBook(bookDTO) {
+    const validate = addBookValidator();
+    const isValid = validate(bookDTO);    
+    if (!isValid) throw createHttpError.BadRequest(validate.errors);
+
+    return this.#Book.create(bookDTO);
   }
 }
 

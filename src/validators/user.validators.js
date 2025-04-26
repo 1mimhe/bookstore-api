@@ -15,7 +15,6 @@ function addUserAddressValidator() {
       phoneNumber: { type: 'string', format: 'iran-phone' }
     },
     required: ['userId', 'recipientName', 'province', 'city', 'postalAddress'],
-    additionalProperties: false,
   };
 
   return ajv.compile(schema);
@@ -34,7 +33,6 @@ function editUserValidator() {
       phoneNumber: { type: 'string', format: 'iran-phone' },
       email: { type: 'string', format: 'email' },
     },
-    additionalProperties: false,
   };
 
   return ajv.compile(schema);

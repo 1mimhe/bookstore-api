@@ -227,17 +227,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Languages retrieved successfully.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Language"
-                                    }
-                                }
-                            }
-                        }
+                        "description": "Languages retrieved successfully."
                     },
                     "500": {
                         "description": "Internal server error."
@@ -383,6 +373,39 @@
                     }
                 }
             }
+        },
+        "/books": {
+            "post": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Add a new book",
+                "description": "Creates a new book with the provided information",
+                "requestBody": {
+                    "description": "Book object to be added",
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddBook"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddBook"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Book created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -512,26 +535,6 @@
                     }
                 }
             },
-            "Language": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "language": {
-                        "type": "string"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                }
-            },
             "CreateTitle": {
                 "type": "object",
                 "required": [
@@ -577,6 +580,165 @@
                         "type": "string",
                         "format": "date",
                         "description": "Original publication date"
+                    }
+                }
+            },
+            "AddBook": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "titleId"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The name of the book"
+                    },
+                    "anotherName": {
+                        "type": "string",
+                        "description": "Alternative name for the book"
+                    },
+                    "titleId": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "description": "ID of the book title"
+                    },
+                    "languageId": {
+                        "type": "integer",
+                        "description": "ID of the book language"
+                    },
+                    "ISBN": {
+                        "type": "string",
+                        "description": "International Standard Book Number"
+                    },
+                    "quarto": {
+                        "type": "string",
+                        "enum": [
+                            "vaziri",
+                            "roqee",
+                            "jibi",
+                            "rahli",
+                            "kheshti",
+                            "paltoyi",
+                            "sultani"
+                        ],
+                        "description": "Book size format"
+                    },
+                    "cover": {
+                        "type": "string",
+                        "enum": [
+                            "shoomiz",
+                            "kaqazi",
+                            "sakht",
+                            "charmi"
+                        ],
+                        "description": "Type of book cover"
+                    },
+                    "pagesNumber": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Number of pages in the book"
+                    },
+                    "publishedAt": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Publication date of the book (YYYY-MM-DD)"
+                    },
+                    "publishSeries": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Publication series number"
+                    },
+                    "weight": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "Weight of the book"
+                    },
+                    "stock": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Number of books in stock"
+                    },
+                    "price": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "Price of the book"
+                    }
+                }
+            },
+            "EditBook": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The name of the book"
+                    },
+                    "anotherName": {
+                        "type": "string",
+                        "description": "Alternative name for the book"
+                    },
+                    "languageId": {
+                        "type": "integer",
+                        "description": "ID of the book language"
+                    },
+                    "ISBN": {
+                        "type": "string",
+                        "description": "International Standard Book Number"
+                    },
+                    "quarto": {
+                        "type": "string",
+                        "enum": [
+                            "vaziri",
+                            "roqee",
+                            "jibi",
+                            "rahli",
+                            "kheshti",
+                            "paltoyi",
+                            "sultani"
+                        ],
+                        "description": "Book size format"
+                    },
+                    "cover": {
+                        "type": "string",
+                        "enum": [
+                            "shoomiz",
+                            "kaqazi",
+                            "sakht",
+                            "charmi"
+                        ],
+                        "description": "Type of book cover"
+                    },
+                    "pagesNumber": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Number of pages in the book"
+                    },
+                    "publishedAt": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Publication date of the book (YYYY-MM-DD)"
+                    },
+                    "publishSeries": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Publication series number"
+                    },
+                    "weight": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "Weight of the book"
+                    },
+                    "stock": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Number of books in stock"
+                    },
+                    "price": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "Price of the book"
                     }
                 }
             }
