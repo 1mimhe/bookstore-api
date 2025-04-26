@@ -42,19 +42,10 @@ Book.belongsTo(Title, {
   foreignKey: 'titleId'
 });
 
-// Title-Language
-Language.hasOne(Title, {
-  foreignKey: 'languageId',
-  as: 'titleLanguage'
-});
-Title.belongsTo(Language, {
-  foreignKey: 'languageId'
-});
-
 // Book-Language
 Book.hasOne(Language, {
   foreignKey: 'languageId',
-  as: 'bookLanguage'
+  as: 'language'
 });
 Language.belongsTo(Book, {
   foreignKey: 'languageId'

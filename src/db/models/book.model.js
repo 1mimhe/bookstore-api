@@ -24,7 +24,6 @@ const Book = sequelize.define("book", {
     allowNull: false
   },
   anotherName: DataTypes.STRING,
-  language: DataTypes.STRING,
   ISBN: DataTypes.STRING,
   quarto: DataTypes.ENUM(...quartos),
   cover: DataTypes.ENUM(...covers),
