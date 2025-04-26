@@ -47,26 +47,26 @@ ajv.addKeyword({
     }
 });
 
-ajv.addFormat('username', {
-    type: 'string',
-    validate: (username) => {
-        const isValidUsername = /^[a-zA-Z0-9](?!.*[_\-.]{2})[a-zA-Z0-9_\-.]{3,28}[a-zA-Z0-9]$/.test(username);
-        return isValidUsername;
+ajv.addKeyword({
+    keyword: 'toSlug',
+    modifying: true,
+    schema: false,
+    validate: function (_, data, parentSchema, dataPath, parentData, propertyName) {
+      if (typeof data === 'string' && parentData && propertyName) {
+        const slug = data
+          .toLowerCase()
+          .trim()
+          .replace(/\s+/g, '-');
+
+        parentData[propertyName] = slug;
+      }
+      return true;
     }
 });
 
-ajv.addFormat('strong-password', {
-    type: 'string',
-    validate: (password) => {
-        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/.test(password);
-    }
-});
-
-ajv.addFormat('iran-phone', {
-    type: 'string',
-    validate: (phoneNumber) => {
-        return /^09\d{9}$/.test(phoneNumber);
-    }
-});
+ajv.addFormat('username', /^[a-zA-Z0-9](?!.*[_\-.]{2})[a-zA-Z0-9_\-.]{3,28}[a-zA-Z0-9]$/);
+ajv.addFormat('strong-password', /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/);
+ajv.addFormat('iran-phone', /^09\d{9}$/);
+ajv.addFormat('date', /^\d{4}-\d{2}-\d{2}$/);
 
 module.exports = ajv;

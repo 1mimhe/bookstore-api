@@ -1,0 +1,50 @@
+const createHttpError = require("http-errors");
+const { addTitleValidator, editTitleValidator } = require("../validators/book.validators");
+const autoBind = require("auto-bind");
+const { Title, Book } = require("../db/models/associations");
+const titleMessages = require("../constants/book.messages");
+
+class BookService {
+  #Title;
+  #Book;
+
+  constructor() {
+    autoBind(this);
+
+    this.#Title = Title;
+    this.#Book = Book;
+  }
+
+  async addTitle(titleDTO) {
+    const validate = addTitleValidator();
+    const isValid = validate(titleDTO);
+    if (!isValid) throw createHttpError.BadRequest(validate.errors);
+  
+    return this.#Title.create(titleDTO);
+  }
+
+  async getTitleById(id) {
+    const title = await this.#Title.findByPk(id);
+    if (!title) throw new createHttpError.NotFound(titleMessages.TitleNotFound);
+    return title;
+  }
+
+  async getPaginatedTitles(limit = 10, offset = 0) {
+    return this.#Title.findAll({
+      limit,
+      offset
+    });
+  }
+
+  async editTitle(titleId, titleDTO) {
+    const validate = editTitleValidator();    
+    const isValid = validate(titleDTO);
+    if (!isValid) throw createHttpError.BadRequest(validate.errors);
+
+    const title = await this.getTitleById(titleId);
+    Object.keys(titleDTO).forEach(key => title[key] = titleDTO[key]);
+    return title.save();
+  }
+}
+
+module.exports = new BookService();

@@ -244,6 +244,145 @@
                     }
                 }
             }
+        },
+        "/books/titles": {
+            "post": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Add a new title",
+                "description": "Creates a new title in the database",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateTitle"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateTitle"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Title created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/books/titles/paginated/{limit}/{offset}": {
+            "get": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Get paginated titles",
+                "description": "Returns a list of titles with pagination",
+                "parameters": [
+                    {
+                        "required": true,
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Maximum number of records to return",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "required": true,
+                        "name": "offset",
+                        "in": "path",
+                        "description": "Number of records to skip",
+                        "schema": {
+                            "type": "integer",
+                            "default": 0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/books/titles/{id}": {
+            "get": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Get title by ID",
+                "description": "Returns a single title by ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of title to return",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Title not found"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Update an existing title",
+                "description": "Updates a title by ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of title to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditTitle"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditTitle"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Title updated successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    },
+                    "404": {
+                        "description": "Title not found"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -390,6 +529,54 @@
                     "updatedAt": {
                         "type": "string",
                         "format": "date-time"
+                    }
+                }
+            },
+            "CreateTitle": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "slug"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Title name"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "description": "URL-friendly identifier"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "description": "Brief summary of the title"
+                    },
+                    "originallyPublishedAt": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Original publication date"
+                    }
+                }
+            },
+            "EditTitle": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Title name"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "description": "URL-friendly identifier"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "description": "Brief summary of the title"
+                    },
+                    "originallyPublishedAt": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Original publication date"
                     }
                 }
             }
