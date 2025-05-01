@@ -88,6 +88,14 @@ class BookService {
       }] // TODO: other relations
     });
   }
+  
+  async deleteBook(id) {
+    return this.#Book.destroy({
+      where: {
+        id
+      }
+    });
+  }
 }
 
 module.exports = new BookService();

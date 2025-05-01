@@ -448,6 +448,31 @@
                         "description": "Invalid input"
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Delete a book",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Unique identifier of the book",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Book deleted successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
             }
         },
         "/books/titles/by-id/{id}": {

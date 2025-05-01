@@ -87,6 +87,18 @@ class TitleController {
       next(error);
     }
   }
+
+  async deleteBook(req, res, next) {
+    try {
+      const { id } = req.params;        
+      const isBookDeleted = await this.#Service.deleteBook(id) ? true : false;
+      return res.status(200).json({
+        success: isBookDeleted
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new TitleController()
