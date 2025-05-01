@@ -19,7 +19,7 @@ class BookService {
     const validate = addTitleValidator();
     const isValid = validate(titleDTO);
     if (!isValid) throw createHttpError.BadRequest(validate.errors);
-  
+    // TODO: elasticsearch
     return this.#Title.create(titleDTO);
   }
 
@@ -50,8 +50,27 @@ class BookService {
     const validate = addBookValidator();
     const isValid = validate(bookDTO);    
     if (!isValid) throw createHttpError.BadRequest(validate.errors);
-
+    // TODO: elasticsearch
     return this.#Book.create(bookDTO);
+  }
+
+  async getCompleteTitleById(id) {
+    return this.#Title.findByPk(id, {
+      include: [{
+        model: this.#Book
+      }] // TODO: other relations
+    });
+  }
+
+  async getCompleteTitleBySlug(slug) {
+    return this.#Title.findOne({
+      where: {
+        slug
+      },
+      include: [{
+        model: this.#Book
+      }] // TODO: other relations
+    });
   }
 }
 

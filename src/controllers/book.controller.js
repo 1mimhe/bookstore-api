@@ -20,17 +20,6 @@ class TitleController {
     }
   }
 
-  async getTitleById(req, res, next) {
-    try {
-      const { id } = req.params;
-      
-      const title = await this.#Service.getTitleById(id);
-      return res.json(title);
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async getTitles(req, res, next) {
     try {
       const { limit, offset } = req.params;
@@ -61,6 +50,26 @@ class TitleController {
       const newBook = await this.#Service.addBook({ name, anotherName, titleId, languageId, ISBN, quarto, cover,
                                                 pagesNumber, publishedAt, publishSeries, weight, stock, price });
       return res.status(201).json(newBook);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getTitleById(req, res, next) {
+    try {
+      const { id } = req.params;
+      const title = await this.#Service.getCompleteTitleById(id);
+      return res.json(title);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getTitleBySlug(req, res, next) {
+    try {
+      const { slug } = req.params;
+      const title = await this.#Service.getCompleteTitleBySlug(slug);
+      return res.json(title);
     } catch (error) {
       next(error);
     }

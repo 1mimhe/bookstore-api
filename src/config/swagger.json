@@ -406,6 +406,69 @@
                     }
                 }
             }
+        },
+        "/books/titles/by-id/{id}": {
+            "get": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Get complete title by ID",
+                "description": "Retrieves complete title information by its unique identifier",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Unique identifier of the title",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Title not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/books/titles/{slug}": {
+            "get": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Get complete title by slug",
+                "description": "Retrieves complete title information by its unique identifier",
+                "operationId": "getTitleById",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Unique slug identifier of the title",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Title not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
         }
     },
     "components": {
