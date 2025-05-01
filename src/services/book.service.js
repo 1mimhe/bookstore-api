@@ -1,8 +1,8 @@
 const createHttpError = require("http-errors");
-const { addTitleValidator, editTitleValidator, addBookValidator } = require("../validators/book.validators");
+const { addTitleValidator, editTitleValidator, addBookValidator, editBookValidator } = require("../validators/book.validators");
 const autoBind = require("auto-bind");
 const { Title, Book } = require("../db/models/associations");
-const titleMessages = require("../constants/book.messages");
+const bookMessages = require("../constants/book.messages");
 
 class BookService {
   #Title;
@@ -25,7 +25,7 @@ class BookService {
 
   async getTitleById(id) {
     const title = await this.#Title.findByPk(id);
-    if (!title) throw new createHttpError.NotFound(titleMessages.TitleNotFound);
+    if (!title) throw new createHttpError.NotFound(bookMessages.TitleNotFound);
     return title;
   }
 
@@ -52,6 +52,22 @@ class BookService {
     if (!isValid) throw createHttpError.BadRequest(validate.errors);
     // TODO: elasticsearch
     return this.#Book.create(bookDTO);
+  }
+
+  async getBookById(id) {
+    const title = await this.#Book.findByPk(id);
+    if (!title) throw new createHttpError.NotFound(bookMessages.BookNotFound);
+    return title;
+  }
+
+  async editBook(bookId, bookDTO) {
+    const validate = editBookValidator();
+    const isValid = validate(bookDTO);    
+    if (!isValid) throw createHttpError.BadRequest(validate.errors);
+
+    const book = await this.getBookById(bookId);
+    Object.keys(bookDTO).forEach(key => book[key] = bookDTO[key]);
+    return book.save();
   }
 
   async getCompleteTitleById(id) {

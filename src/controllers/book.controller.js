@@ -45,11 +45,24 @@ class TitleController {
     try {
       const { name, anotherName, titleId, languageId, ISBN, quarto, cover,
         pagesNumber, publishedAt, publishSeries, weight, stock, price } = req.body;
-        console.log(req.body);
         
       const newBook = await this.#Service.addBook({ name, anotherName, titleId, languageId, ISBN, quarto, cover,
                                                 pagesNumber, publishedAt, publishSeries, weight, stock, price });
       return res.status(201).json(newBook);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async editBook(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { name, anotherName, languageId, ISBN, quarto, cover,
+        pagesNumber, publishedAt, publishSeries, weight, stock, price } = req.body;
+        
+      const editedBook = await this.#Service.editBook(id, { name, anotherName, languageId, ISBN, quarto, cover,
+                                                pagesNumber, publishedAt, publishSeries, weight, stock, price });
+      return res.status(200).json(editedBook);
     } catch (error) {
       next(error);
     }

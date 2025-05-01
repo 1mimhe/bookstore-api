@@ -55,24 +55,24 @@ function editTitleValidator() {
   return ajv.compile(schema);
 }
 
+const quartos = [
+  'vaziri',
+  'roqee',
+  'jibi',
+  'rahli',
+  'kheshti',
+  'paltoyi',
+  'sultani'
+];
+
+const covers = [
+  'shoomiz',
+  'kaqazi',
+  'sakht',
+  'charmi'
+];
+
 function addBookValidator() {
-  const quartos = [
-    'vaziri',
-    'roqee',
-    'jibi',
-    'rahli',
-    'kheshti',
-    'paltoyi',
-    'sultani'
-  ];
-
-  const covers = [
-    'shoomiz',
-    'kaqazi',
-    'sakht',
-    'charmi'
-  ];
-
   const schema = {
     type: 'object',
     removeEmpty: true,
@@ -141,8 +141,74 @@ function addBookValidator() {
   return ajv.compile(schema);
 }
 
+function editBookValidator() {
+  const schema = {
+    type: 'object',
+    removeEmpty: true,
+    properties: {
+      name: {
+        type: 'string',
+        minLength: 1 
+      },
+      anotherName: {
+        type: 'string'
+      },
+      languageId: {
+        type: 'integer'
+      },
+      ISBN: { 
+        type: 'string'
+      },
+      quarto: { 
+        type: 'string',
+        enum: quartos
+      },
+      cover: { 
+        type: 'string',
+        enum: covers
+      },
+      pagesNumber: {
+        type: 'integer',
+        minimum: 0
+      },
+      publishedAt: {
+        type: 'string',
+        format: 'date'
+      },
+      publishSeries: {
+        type: 'integer',
+        minimum: 0
+      },
+      weight: { 
+        type: 'number',
+        minimum: 0
+      },
+      stock: { 
+        type: 'integer',
+        minimum: 0
+      },
+      price: { 
+        type: 'number',
+        minimum: 0
+      },
+      // publisherId: { 
+      //   type: 'integer',
+      //   minimum: 1
+      // },
+      // translatorId: { 
+      //   type: 'integer',
+      //   minimum: 1,
+      // }
+    },
+  };
+
+  return ajv.compile(schema);
+}
+
+
 module.exports = {
   addTitleValidator,
   editTitleValidator,
-  addBookValidator
+  addBookValidator,
+  editBookValidator
 }
