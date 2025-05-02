@@ -3,16 +3,20 @@ const { addTitleValidator, editTitleValidator, addBookValidator, editBookValidat
 const autoBind = require("auto-bind");
 const { Title, Book } = require("../db/models/associations");
 const bookMessages = require("../constants/book.messages");
+const sequelize = require("../config/sequelize.config");
+const BookImage = require("../db/models/bookImages.model");
 
 class BookService {
   #Title;
   #Book;
+  #BookImage;
 
   constructor() {
     autoBind(this);
 
     this.#Title = Title;
     this.#Book = Book;
+    this.#BookImage = BookImage;
   }
 
   async addTitle(titleDTO) {
@@ -46,12 +50,26 @@ class BookService {
     return title.save();
   }
 
-  async addBook(bookDTO) {
+  async addBook(bookDTO, bookImages) {
     const validate = addBookValidator();
     const isValid = validate(bookDTO);    
     if (!isValid) throw createHttpError.BadRequest(validate.errors);
     // TODO: elasticsearch
-    return this.#Book.create(bookDTO);
+
+    return sequelize.transaction(async t => {
+      const book = await this.#Book.create(bookDTO, {
+        transaction: t
+      });
+
+      if (bookImages) {
+        const imagesToCreate = bookImages.map(image => ({
+          ...image,
+          bookId: book.id
+        }));
+        
+        await this.#BookImage.bulkCreate(imagesToCreate, { transaction: t });
+      }
+    });
   }
 
   async getBookById(id) {

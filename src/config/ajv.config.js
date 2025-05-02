@@ -10,31 +10,49 @@ addFormats(ajv);
 function removeEmptyValues(obj) {
     if (!obj || typeof obj !== 'object') return;
 
-    const stack = [{ obj, key: null }];
+    const stack = [{ obj, key: null, parent: null }];
     const seen = new WeakSet();
 
     while (stack.length > 0) {
-        const { obj: currentObj, key } = stack.pop();
+        const { obj: currentObj, key, parent } = stack.pop();
 
         if (seen.has(currentObj)) {
             continue;
         }
         seen.add(currentObj);
 
-        if (key && (currentObj === undefined || currentObj === null || currentObj === '')) {
-            delete obj[key];
-            continue;
+        if (key === null && parent === null) {
+            if (Array.isArray(currentObj) && currentObj.length === 0) {
+                currentObj.length = 0;
+                continue;
+            }
+        }
+        
+        if (key !== null && parent !== null) {
+            if (
+                currentObj === undefined || 
+                currentObj === null || 
+                currentObj === '' || 
+                (Array.isArray(currentObj) && currentObj.length === 0)
+            ) {
+                delete parent[key];
+                continue;
+            }
         }
 
         if (currentObj && typeof currentObj === 'object') {
-            Object.keys(currentObj).forEach(key => {
-                const value = currentObj[key];
+            const keys = Object.keys(currentObj);
+            
+            for (let i = 0; i < keys.length; i++) {
+                const k = keys[i];
+                const value = currentObj[k];
+                
                 if (value && typeof value === 'object') {
-                    stack.push({ obj: value, key });
+                    stack.push({ obj: value, key: k, parent: currentObj });
                 } else if (value === undefined || value === null || value === '') {
-                    delete currentObj[key];
+                    delete currentObj[k];
                 }
-            });
+            }
         }
     }
 }

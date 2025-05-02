@@ -32,7 +32,7 @@ class AuthService {
         userDTO.hashedPassword = await hashPassword(userDTO.password);
         delete userDTO.password;
 
-        const result = await sequelize.transaction(async t => {
+        return sequelize.transaction(async t => {
             const user = await this.#User.create(userDTO, {
                 fields: ["username", "hashedPassword", "firstName", "lastName"],
                 transaction: t
@@ -61,8 +61,6 @@ class AuthService {
                 user, contact, roles
             };
         });
-
-        return result;
     }
 
     async loginUser({ identifier, password }) {

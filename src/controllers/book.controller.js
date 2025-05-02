@@ -44,10 +44,10 @@ class TitleController {
   async addBook(req, res, next) {
     try {
       const { name, anotherName, titleId, languageId, ISBN, quarto, cover,
-        pagesNumber, publishedAt, publishSeries, weight, stock, price } = req.body;
+        pagesNumber, publishedAt, publishSeries, weight, stock, price, bookImages } = req.body;
         
       const newBook = await this.#Service.addBook({ name, anotherName, titleId, languageId, ISBN, quarto, cover,
-                                                pagesNumber, publishedAt, publishSeries, weight, stock, price });
+                                                pagesNumber, publishedAt, publishSeries, weight, stock, price }, bookImages);
       return res.status(201).json(newBook);
     } catch (error) {
       next(error);

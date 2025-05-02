@@ -34,6 +34,10 @@ const Book = sequelize.define("book", {
   stock: DataTypes.INTEGER.UNSIGNED,
   price: DataTypes.FLOAT.UNSIGNED,
   discountPercent: DataTypes.FLOAT.UNSIGNED,
+  sold: {
+    type: DataTypes.INTEGER,
+    default: 0
+  }
 }, {
   timestamps: true,
   paranoid: true,

@@ -380,9 +380,9 @@
                     "Book"
                 ],
                 "summary": "Add a new book",
-                "description": "Creates a new book with the provided information",
+                "description": "Creates a new book with the provided information and optional book images",
                 "requestBody": {
-                    "description": "Book object to be added",
+                    "description": "Book object to be added with optional book images",
                     "required": true,
                     "content": {
                         "application/x-www-form-urlencoded": {
@@ -795,9 +795,52 @@
                         "type": "number",
                         "minimum": 0,
                         "description": "Price of the book"
+                    },
+                    "bookImages": {
+                        "type": "array",
+                        "description": "Book images collection",
+                        "items": {
+                            "$ref": "#/components/schemas/BookImage"
+                        },
+                        "example": [
+                            {
+                                "type": "main",
+                                "url": "https://example.com/book-main.jpg"
+                            },
+                            {
+                                "type": "cover",
+                                "url": "https://example.com/book-cover.jpg"
+                            }
+                        ]
                     }
                 }
             },
+            "BookImage": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "url"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "Type of book image",
+                    "enum": [
+                      "main",
+                      "back",
+                      "inside",
+                      "cover"
+                    ],
+                    "example": "main"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the image",
+                    "example": "https://example.com/book-main.jpg"
+                  }
+                }
+              },
             "EditBook": {
                 "type": "object",
                 "properties": {

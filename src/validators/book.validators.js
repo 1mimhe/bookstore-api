@@ -126,6 +126,23 @@ function addBookValidator() {
         type: 'number',
         minimum: 0
       },
+      bookImages: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            type: {
+              type: 'string',
+              enum: ['main', 'back', 'inside', 'cover']
+            },
+            url: {
+              type: 'string',
+              format: 'uri',
+              minLength: 1
+            }
+          }
+        }
+      },
       // publisherId: { 
       //   type: 'integer',
       //   minimum: 1
