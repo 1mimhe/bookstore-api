@@ -73,14 +73,16 @@ ajv.addKeyword({
     keyword: 'toSlug',
     modifying: true,
     schema: false,
-    validate: function (_, data, parentSchema, dataPath, parentData, propertyName) {
-      if (typeof data === 'string' && parentData && propertyName) {
-        const slug = data
+    validate: function (_, { parentData, parentDataProperty }) {
+      if (parentData && parentDataProperty) {
+        const slug = parentData[parentDataProperty]
           .toLowerCase()
           .trim()
-          .replace(/\s+/g, '-');
+          .replace(/[^\w\s-]/g, '')
+          .replace(/[\s_]+/g, '-')
+          .replace(/^-+|-+$/g, '');
 
-        parentData[propertyName] = slug;
+        parentData[parentDataProperty] = slug;
       }
       return true;
     }

@@ -9,7 +9,7 @@ function addTitleValidator() {
         type: 'string',
         minLength: 3
       },
-      slug: { 
+      slug: {
         type: 'string',
         toSlug: true,
         minLength: 3
