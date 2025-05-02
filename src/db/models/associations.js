@@ -5,6 +5,7 @@ const Address = require("./address.model");
 const Title = require("./title.model");
 const Book = require("./book.model");
 const Language = require("./language.model");
+const BookImage = require("./bookImage.model");
 
 // User-Contact
 User.hasOne(Contact, {
@@ -51,11 +52,21 @@ Language.belongsTo(Book, {
   foreignKey: 'languageId'
 });
 
+// Book-BookImage
+Book.hasMany(BookImage, {
+  foreignKey: 'bookId',
+  as: 'bookImages'
+});
+BookImage.belongsTo(Book, {
+  foreignKey: 'bookId'
+});
+
 module.exports = {
   User,
   Contact,
   Role,
   Title,
   Book,
-  Language
+  Language,
+  BookImage
 };
