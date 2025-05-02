@@ -1,10 +1,9 @@
 const createHttpError = require("http-errors");
 const { addTitleValidator, editTitleValidator, addBookValidator, editBookValidator } = require("../validators/book.validators");
 const autoBind = require("auto-bind");
-const { Title, Book } = require("../db/models/associations");
+const { Title, Book, BookImage } = require("../db/models/associations");
 const bookMessages = require("../constants/book.messages");
 const sequelize = require("../config/sequelize.config");
-const BookImage = require("../db/models/bookImages.model");
 
 class BookService {
   #Title;

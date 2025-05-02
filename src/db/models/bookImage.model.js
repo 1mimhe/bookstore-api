@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require('@sequelize/core');
 const sequelize = require('../../config/sequelize.config');
 
 const bookImageTypes = [
@@ -9,15 +9,6 @@ const bookImageTypes = [
 ];
 
 const BookImage = sequelize.define("book_image", {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  bookId: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
   type: {
     type: DataTypes.ENUM(...bookImageTypes),
     allowNull: false
