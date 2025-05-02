@@ -32,7 +32,7 @@ class AuthService {
         userDTO.hashedPassword = await hashPassword(userDTO.password);
         delete userDTO.password;
 
-        const result = await sequelize.transaction(async t => {
+        return sequelize.transaction(async t => {
             const user = await this.#User.create(userDTO, {
                 fields: ["username", "hashedPassword", "firstName", "lastName"],
                 transaction: t
@@ -61,8 +61,6 @@ class AuthService {
                 user, contact, roles
             };
         });
-
-        return result;
     }
 
     async loginUser({ identifier, password }) {
@@ -102,13 +100,7 @@ class AuthService {
     async refreshTokens(session, oldRefreshToken, expirationTime) {
         if (session?.refreshToken && oldRefreshToken 
             && session?.refreshToken === oldRefreshToken) {
-            let username;
-            try {
-                username = jwt.verify(oldRefreshToken, process.env.JWT_REFRESH_SECRET_KEY).username;
-            } catch (error) {
-                throw new createHttpError.Unauthorized(`${authMessages.InvalidRefreshToken} ${error.message}`);
-            }
-
+            const username = jwt.verify(oldRefreshToken, process.env.JWT_REFRESH_SECRET_KEY).username;
             const newRefreshToken = await this.#generateRefreshToken({ username }, Math.trunc(expirationTime / 1000));
             const newAccessToken = await this.#generateAccessToken({ username });
 

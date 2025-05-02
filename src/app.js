@@ -7,7 +7,8 @@ const { SwaggerConfig } = require("./config/swagger.config");
 require("./config/env.config"); // Config environment
 const app = express();
 require("./config/sequelize.config"); // Config DB connection
-require("./db/models/associations"); // DB models associations 
+require("./db/models/associations"); // DB models associations
+require("./config/db.sync"); // DB sync (for development environment)
 const redisClient = require("./config/redis.config"); // Config Redis
 const session = require("./config/session.config")(redisClient);
 

@@ -86,7 +86,7 @@
                 }
             }
         },
-        "/user/me": {
+        "/users/me": {
             "get": {
                 "summary": "Get current user details.",
                 "tags": [
@@ -107,7 +107,7 @@
                 }
             }
         },
-        "/user/addAddress": {
+        "/users/addAddress": {
             "post": {
                 "summary": "Add a new address for the user.",
                 "tags": [
@@ -148,7 +148,7 @@
                 }
             }
         },
-        "/user/edit": {
+        "/users/edit": {
             "patch": {
                 "summary": "Edit a user.",
                 "tags": [
@@ -176,6 +176,364 @@
                 "responses": {
                     "200": {
                         "description": "User updated successfully."
+                    }
+                }
+            }
+        },
+        "/languages": {
+            "post": {
+                "summary": "Add a new language.",
+                "tags": [
+                    "Language"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddLanguage"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddLanguage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Language added successfully."
+                    },
+                    "400": {
+                        "description": "Invalid input data."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            },
+            "get": {
+                "summary": "Get all languages.",
+                "tags": [
+                    "Language"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Languages retrieved successfully."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        },
+        "/books/titles": {
+            "post": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Add a new title",
+                "description": "Creates a new title in the database",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateTitle"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateTitle"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Title created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/books/titles/paginated/{limit}/{offset}": {
+            "get": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Get paginated titles",
+                "description": "Returns a list of titles with pagination",
+                "parameters": [
+                    {
+                        "required": true,
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Maximum number of records to return",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "required": true,
+                        "name": "offset",
+                        "in": "path",
+                        "description": "Number of records to skip",
+                        "schema": {
+                            "type": "integer",
+                            "default": 0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/books/titles/{id}": {
+            "get": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Get title by ID",
+                "description": "Returns a single title by ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of title to return",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Title not found"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Update an existing title",
+                "description": "Updates a title by ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of title to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditTitle"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditTitle"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Title updated successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    },
+                    "404": {
+                        "description": "Title not found"
+                    }
+                }
+            }
+        },
+        "/books": {
+            "post": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Add a new book",
+                "description": "Creates a new book with the provided information and optional book images",
+                "requestBody": {
+                    "description": "Book object to be added with optional book images",
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddBook"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddBook"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Book created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/books/{id}": {
+            "patch": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Edit a book",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Unique identifier of the book",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Book object to be added",
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditBook"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditBook"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Book edited successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Delete a book",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Unique identifier of the book",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Book deleted successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/books/titles/by-id/{id}": {
+            "get": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Get complete title by ID",
+                "description": "Retrieves complete title information by its unique identifier",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Unique identifier of the title",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Title not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/books/titles/{slug}": {
+            "get": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Get complete title by slug",
+                "description": "Retrieves complete title information by its unique identifier",
+                "operationId": "getTitleById",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Unique slug identifier of the title",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Title not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
                 }
             }
@@ -292,6 +650,269 @@
                     },
                     "email": {
                         "type": "string"
+                    }
+                }
+            },
+            "AddLanguage": {
+                "type": "object",
+                "required": [
+                    "language"
+                ],
+                "properties": {
+                    "language": {
+                        "type": "string",
+                        "description": "Language name",
+                        "example": "English"
+                    }
+                }
+            },
+            "CreateTitle": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "slug"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Title name"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "description": "URL-friendly identifier"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "description": "Brief summary of the title"
+                    },
+                    "originallyPublishedAt": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Original publication date"
+                    }
+                }
+            },
+            "EditTitle": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Title name"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "description": "URL-friendly identifier"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "description": "Brief summary of the title"
+                    },
+                    "originallyPublishedAt": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Original publication date"
+                    }
+                }
+            },
+            "AddBook": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "titleId"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The name of the book"
+                    },
+                    "anotherName": {
+                        "type": "string",
+                        "description": "Alternative name for the book"
+                    },
+                    "titleId": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "description": "ID of the book title"
+                    },
+                    "languageId": {
+                        "type": "integer",
+                        "description": "ID of the book language"
+                    },
+                    "ISBN": {
+                        "type": "string",
+                        "description": "International Standard Book Number"
+                    },
+                    "quarto": {
+                        "type": "string",
+                        "enum": [
+                            "vaziri",
+                            "roqee",
+                            "jibi",
+                            "rahli",
+                            "kheshti",
+                            "paltoyi",
+                            "sultani"
+                        ],
+                        "description": "Book size format"
+                    },
+                    "cover": {
+                        "type": "string",
+                        "enum": [
+                            "shoomiz",
+                            "kaqazi",
+                            "sakht",
+                            "charmi"
+                        ],
+                        "description": "Type of book cover"
+                    },
+                    "pagesNumber": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Number of pages in the book"
+                    },
+                    "publishedAt": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Publication date of the book (YYYY-MM-DD)"
+                    },
+                    "publishSeries": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Publication series number"
+                    },
+                    "weight": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "Weight of the book"
+                    },
+                    "stock": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Number of books in stock"
+                    },
+                    "price": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "Price of the book"
+                    },
+                    "bookImages": {
+                        "type": "array",
+                        "description": "Book images collection",
+                        "items": {
+                            "$ref": "#/components/schemas/BookImage"
+                        },
+                        "example": [
+                            {
+                                "type": "main",
+                                "url": "https://example.com/book-main.jpg"
+                            },
+                            {
+                                "type": "cover",
+                                "url": "https://example.com/book-cover.jpg"
+                            }
+                        ]
+                    }
+                }
+            },
+            "BookImage": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "url"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "Type of book image",
+                    "enum": [
+                      "main",
+                      "back",
+                      "inside",
+                      "cover"
+                    ],
+                    "example": "main"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the image",
+                    "example": "https://example.com/book-main.jpg"
+                  }
+                }
+              },
+            "EditBook": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The name of the book"
+                    },
+                    "anotherName": {
+                        "type": "string",
+                        "description": "Alternative name for the book"
+                    },
+                    "languageId": {
+                        "type": "integer",
+                        "description": "ID of the book language"
+                    },
+                    "ISBN": {
+                        "type": "string",
+                        "description": "International Standard Book Number"
+                    },
+                    "quarto": {
+                        "type": "string",
+                        "enum": [
+                            "vaziri",
+                            "roqee",
+                            "jibi",
+                            "rahli",
+                            "kheshti",
+                            "paltoyi",
+                            "sultani"
+                        ],
+                        "description": "Book size format"
+                    },
+                    "cover": {
+                        "type": "string",
+                        "enum": [
+                            "shoomiz",
+                            "kaqazi",
+                            "sakht",
+                            "charmi"
+                        ],
+                        "description": "Type of book cover"
+                    },
+                    "pagesNumber": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Number of pages in the book"
+                    },
+                    "publishedAt": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Publication date of the book (YYYY-MM-DD)"
+                    },
+                    "publishSeries": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Publication series number"
+                    },
+                    "weight": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "Weight of the book"
+                    },
+                    "stock": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Number of books in stock"
+                    },
+                    "price": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "Price of the book"
                     }
                 }
             }

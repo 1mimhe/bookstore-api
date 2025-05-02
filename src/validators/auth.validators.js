@@ -13,7 +13,6 @@ function registrationValidator() {
             email: { type: 'string', format: 'email' },
         },
         required: ['username', 'firstName', 'password'],
-        additionalProperties: false,
     };
 
     return ajv.compile(schema);

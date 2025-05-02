@@ -9,18 +9,13 @@ async function authorization(req, res, next) {
         const accessToken = req.headers[headerNames.Auth]?.split(" ")[1];
         if (!accessToken) throw createHttpError.Unauthorized(authMessages.MissingAccessToken);
 
-        let payload;
-        try {
-            payload = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET_KEY);
-        } catch (error) {
-            throw createHttpError.Unauthorized(`${authMessages.InvalidAccessToken} ${error.message}`);
-        }
+        const payload = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET_KEY);
         if (!payload?.username) {
-            throw createHttpError.Unauthorized(authMessages.InvalidAccessToken);
+            throw createHttpError.Unauthorized(authMessages.InvalidToken);
         }
 
         const user = await getUserByIdentifier(payload.username,  ['hashedPassword']);
-        if (!user) throw createHttpError.Unauthorized(authMessages.InvalidAccessToken);
+        if (!user) throw createHttpError.Unauthorized(authMessages.InvalidToken);
         
         req.user = user;
 
