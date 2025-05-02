@@ -128,6 +128,7 @@ function addBookValidator() {
       },
       bookImages: {
         type: 'array',
+        decodeUrlArray: true,
         items: {
           type: 'object',
           properties: {

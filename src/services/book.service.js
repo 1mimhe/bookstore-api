@@ -49,24 +49,30 @@ class BookService {
     return title.save();
   }
 
-  async addBook(bookDTO, bookImages) {
+  async addBook(bookDTO) {
     const validate = addBookValidator();
     const isValid = validate(bookDTO);    
     if (!isValid) throw createHttpError.BadRequest(validate.errors);
     // TODO: elasticsearch
 
+    const { bookImages, ...book } = bookDTO;
     return sequelize.transaction(async t => {
-      const book = await this.#Book.create(bookDTO, {
+      const newBook = await this.#Book.create(book, {
         transaction: t
       });
 
       if (bookImages) {
         const imagesToCreate = bookImages.map(image => ({
           ...image,
-          bookId: book.id
+          bookId: newBook.id
         }));
         
-        await this.#BookImage.bulkCreate(imagesToCreate, { transaction: t });
+        const newBookImages = await this.#BookImage.bulkCreate(imagesToCreate, { transaction: t });
+
+        return {
+          ...newBook.dataValues,
+          bookImages: newBookImages
+        };
       }
     });
   }

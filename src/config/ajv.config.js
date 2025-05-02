@@ -88,6 +88,21 @@ ajv.addKeyword({
     }
 });
 
+ajv.addKeyword({
+    keyword: 'decodeUrlArray',
+    modifying: true,
+    schema: false,
+    validate: function (schema, { parentData, parentDataProperty }) {
+      const data = parentData[parentDataProperty];
+      if (typeof data === 'string' && parentData && parentDataProperty) {
+          const decodedString = decodeURIComponent(data);
+          parentData[parentDataProperty] = JSON.parse(decodedString);
+      }
+      
+      return true;
+    }
+  });
+
 ajv.addFormat('username', /^[a-zA-Z0-9](?!.*[_\-.]{2})[a-zA-Z0-9_\-.]{3,28}[a-zA-Z0-9]$/);
 ajv.addFormat('strong-password', /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/);
 ajv.addFormat('iran-phone', /^09\d{9}$/);
