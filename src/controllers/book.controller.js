@@ -12,7 +12,9 @@ class TitleController {
 
   async addTitle(req, res, next) {
     try {
-      const { name, slug, summary, originallyPublishedAt } = req.body;
+      let { name, slug, summary, originallyPublishedAt } = req.body;
+      if (!slug) slug = name;
+
       const newTitle = await this.#Service.addTitle({ name, slug, summary, originallyPublishedAt });
       return res.status(201).json(newTitle);
     } catch (error) {

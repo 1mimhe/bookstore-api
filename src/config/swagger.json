@@ -669,8 +669,7 @@
             "CreateTitle": {
                 "type": "object",
                 "required": [
-                    "name",
-                    "slug"
+                    "name"
                 ],
                 "properties": {
                     "name": {

@@ -76,11 +76,11 @@ ajv.addKeyword({
     validate: function (_, { parentData, parentDataProperty }) {
       if (parentData && parentDataProperty) {
         const slug = parentData[parentDataProperty]
-          .toLowerCase()
-          .trim()
-          .replace(/[^\w\s-]/g, '')
-          .replace(/[\s_]+/g, '-')
-          .replace(/^-+|-+$/g, '');
+        .trim()
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}\s-]/gu, '')
+        .replace(/[\s_]+/g, '-')
+        .replace(/^-+|-+$/g, '');
 
         parentData[parentDataProperty] = slug;
       }

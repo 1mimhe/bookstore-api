@@ -11,8 +11,7 @@ function addTitleValidator() {
       },
       slug: {
         type: 'string',
-        toSlug: true,
-        minLength: 3
+        toSlug: true
       },
       summary: { 
         type: 'string'
@@ -22,7 +21,7 @@ function addTitleValidator() {
         format: 'date'
       }
     },
-    required: ['name', 'slug'],
+    required: ['name'],
   };
 
   return ajv.compile(schema);
@@ -39,8 +38,7 @@ function editTitleValidator() {
       },
       slug: { 
         type: 'string',
-        toSlug: true,
-        minLength: 3
+        toSlug: true
       },
       summary: { 
         type: 'string'
