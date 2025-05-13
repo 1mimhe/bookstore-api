@@ -1,5 +1,6 @@
 const { DataTypes } = require("@sequelize/core");
 const sequelize = require("../../config/sequelize.config");
+const { makeUnique } = require("../../utils/sanitization.utils");
 
 const Title = sequelize.define("title", {
   name: {
@@ -8,7 +9,6 @@ const Title = sequelize.define("title", {
   },
   slug: {
     type: DataTypes.STRING,
-    allowNull: false,
     unique: true
   },
   summary: DataTypes.TEXT,
@@ -21,7 +21,12 @@ const Title = sequelize.define("title", {
       name: "slug_index",
       fields: ["slug"]
     }
-  ]
+  ],
+  hooks: {
+    beforeCreate: (title, options) => {
+      title.slug = makeUnique(title.slug);
+    }
+  }
 });
 
 module.exports = Title;

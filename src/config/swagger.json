@@ -247,12 +247,12 @@
                     "content": {
                         "application/x-www-form-urlencoded": {
                             "schema": {
-                                "$ref": "#/components/schemas/CreateTitle"
+                                "$ref": "#/components/schemas/AddTitle"
                             }
                         },
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/CreateTitle"
+                                "$ref": "#/components/schemas/AddTitle"
                             }
                         }
                     }
@@ -537,6 +537,37 @@
                     }
                 }
             }
+        },
+        "/profiles": {
+            "post": {
+                "summary": "Create a new profile (author/translator)",
+                "tags": [
+                    "Profile"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddProfile"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddProfile"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Profile created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -666,11 +697,11 @@
                     }
                 }
             },
-            "CreateTitle": {
+            "AddTitle": {
                 "type": "object",
                 "required": [
                     "name",
-                    "slug"
+                    "authorIds"
                 ],
                 "properties": {
                     "name": {
@@ -680,6 +711,15 @@
                     "slug": {
                         "type": "string",
                         "description": "URL-friendly identifier"
+                    },
+                    "authorIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
                     },
                     "summary": {
                         "type": "string",
@@ -718,7 +758,8 @@
                 "type": "object",
                 "required": [
                     "name",
-                    "titleId"
+                    "titleId",
+                    "authorIds"
                 ],
                 "properties": {
                     "name": {
@@ -734,6 +775,15 @@
                         "type": "integer",
                         "minimum": 1,
                         "description": "ID of the book title"
+                    },
+                    "translatorIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
                     },
                     "languageId": {
                         "type": "integer",
@@ -818,29 +868,29 @@
             "BookImage": {
                 "type": "object",
                 "required": [
-                  "type",
-                  "url"
+                    "type",
+                    "url"
                 ],
                 "properties": {
-                  "type": {
-                    "type": "string",
-                    "description": "Type of book image",
-                    "enum": [
-                      "main",
-                      "back",
-                      "inside",
-                      "cover"
-                    ],
-                    "example": "main"
-                  },
-                  "url": {
-                    "type": "string",
-                    "format": "uri",
-                    "description": "URL of the image",
-                    "example": "https://example.com/book-main.jpg"
-                  }
+                    "type": {
+                        "type": "string",
+                        "description": "Type of book image",
+                        "enum": [
+                            "main",
+                            "back",
+                            "inside",
+                            "cover"
+                        ],
+                        "example": "main"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL of the image",
+                        "example": "https://example.com/book-main.jpg"
+                    }
                 }
-              },
+            },
             "EditBook": {
                 "type": "object",
                 "properties": {
@@ -913,6 +963,40 @@
                         "type": "number",
                         "minimum": 0,
                         "description": "Price of the book"
+                    }
+                }
+            },
+            "AddProfile": {
+                "type": "object",
+                "required": [
+                    "firstName"
+                ],
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "slug": {
+                        "type": "string",
+                        "maxLength": 150
+                    },
+                    "biography": {
+                        "type": "string",
+                        "maxLength": 5000
+                    },
+                    "dateOfBirth": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1985-04-15"
+                    },
+                    "dateOfDeath": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2020-01-01"
                     }
                 }
             }
