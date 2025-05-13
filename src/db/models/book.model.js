@@ -50,10 +50,6 @@ const Book = sequelize.define("book", {
     //   name: 'publisherId_index',
     //   fields: ['publisherId']
     // },
-    // {
-    //   name: 'translatorId_index',
-    //   fields: ['translatorId']
-    // }
   ]
 });
 

@@ -11,7 +11,18 @@ function addTitleValidator() {
       },
       slug: {
         type: 'string',
-        toSlug: true
+        toSlug: true,
+        minLength: 3
+      },
+      authorIds: {
+        type: 'array',
+        commaSeparatedIntegers: true,
+        items: {
+          type: 'integer',
+          minimum: 1
+        },
+        minItems: 1,
+        uniqueItems: true
       },
       summary: { 
         type: 'string'
@@ -21,7 +32,7 @@ function addTitleValidator() {
         format: 'date'
       }
     },
-    required: ['name'],
+    required: ['name', 'authorIds'],
   };
 
   return ajv.compile(schema);
@@ -38,7 +49,8 @@ function editTitleValidator() {
       },
       slug: { 
         type: 'string',
-        toSlug: true
+        toSlug: true,
+        minLength: 3
       },
       summary: { 
         type: 'string'
@@ -142,13 +154,19 @@ function addBookValidator() {
           }
         }
       },
+      translatorIds: {
+        type: 'array',
+        commaSeparatedIntegers: true,
+        items: {
+          type: 'integer',
+          minimum: 1
+        },
+        minItems: 1,
+        uniqueItems: true
+      }
       // publisherId: { 
       //   type: 'integer',
       //   minimum: 1
-      // },
-      // translatorId: { 
-      //   type: 'integer',
-      //   minimum: 1,
       // }
     },
     required: ['name', 'titleId'],
@@ -211,7 +229,7 @@ function editBookValidator() {
       //   type: 'integer',
       //   minimum: 1
       // },
-      // translatorId: { 
+      // translatorIds: { 
       //   type: 'integer',
       //   minimum: 1,
       // }
