@@ -678,6 +678,81 @@
                     }
                 }
             }
+        },
+        "/publishers/{id}": {
+            "get": {
+                "summary": "Get publisher by ID",
+                "tags": [
+                    "Publisher"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Edit publisher by ID",
+                "tags": [
+                    "Publisher"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditPublisher"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete publisher by ID",
+                "tags": [
+                    "Publisher"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Publisher deleted status"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1165,6 +1240,23 @@
                 "required": [
                     "name"
                 ]
+            },
+            "EditPublisher": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Penguin Books"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "penguin-books"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "A famous book publishing company."
+                    }
+                }
             }
         },
         "securitySchemes": {

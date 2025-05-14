@@ -3,6 +3,7 @@ const ajv = require("../config/ajv.config");
 function addPublisherValidator() {
   const schema = {
     type: "object",
+    removeEmpty: true,
     properties: {
       name: {
         type: "string",
@@ -25,6 +26,7 @@ function addPublisherValidator() {
 function editPublisherValidator() {
   const schema = {
     type: "object",
+    removeEmpty: true,
     properties: {
       name: {
         type: "string",

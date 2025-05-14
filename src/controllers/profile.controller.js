@@ -37,8 +37,10 @@ class ProfileController {
       const { id } = req.params;
       const { firstName, lastName, slug, biography, dateOfBirth, dateOfDeath } = req.body;
   
-      const editedProfile = await this.#Service.editProfile(id, { firstName, lastName, slug, biography, dateOfBirth, dateOfDeath });
-      return res.status(200).json(editedProfile);
+      await this.#Service.editProfile(id, { firstName, lastName, slug, biography, dateOfBirth, dateOfDeath });
+      return res.status(200).json({
+        success: true
+      });
     } catch (error) {
       next(error);
     }

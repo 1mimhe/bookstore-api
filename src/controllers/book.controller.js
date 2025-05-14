@@ -63,9 +63,11 @@ class TitleController {
       const { name, anotherName, languageId, ISBN, quarto, cover,
         pagesNumber, publishedAt, publishSeries, weight, stock, price } = req.body;
         
-      const editedBook = await this.#Service.editBook(id, { name, anotherName, languageId, ISBN, quarto, cover,
-                                                pagesNumber, publishedAt, publishSeries, weight, stock, price });
-      return res.status(200).json(editedBook);
+      await this.#Service.editBook(id, { name, anotherName, languageId, ISBN, quarto, cover,
+                                            pagesNumber, publishedAt, publishSeries, weight, stock, price });
+      return res.status(200).json({
+        success: true
+      });
     } catch (error) {
       next(error);
     }
