@@ -569,6 +569,81 @@
                 }
             }
         },
+        "/profiles/{id}": {
+            "get": {
+                "summary": "Get profile by ID",
+                "tags": [
+                    "Profile"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Edit profile by ID",
+                "tags": [
+                    "Profile"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditProfile"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete profile by ID",
+                "tags": [
+                    "Profile"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profile deleted status"
+                    }
+                }
+            }
+        },
         "/publishers": {
             "post": {
                 "summary": "Add a new publisher",
@@ -1011,6 +1086,37 @@
                 "required": [
                     "firstName"
                 ],
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "slug": {
+                        "type": "string",
+                        "maxLength": 150
+                    },
+                    "biography": {
+                        "type": "string",
+                        "maxLength": 5000
+                    },
+                    "dateOfBirth": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1985-04-15"
+                    },
+                    "dateOfDeath": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2020-01-01"
+                    }
+                }
+            },
+            "EditProfile": {
+                "type": "object",
                 "properties": {
                     "firstName": {
                         "type": "string",
