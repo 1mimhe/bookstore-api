@@ -1,6 +1,7 @@
 function makeUnique(property) {
   if (property) {
-    return `${property}-${Date.now()}`;
+    const id = Date.now().toString(36).slice(2);
+    return `${property}-${id}`;
   }
 }
 
