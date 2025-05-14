@@ -794,6 +794,7 @@
                 "required": [
                     "name",
                     "titleId",
+                    "publisherId",
                     "authorIds"
                 ],
                 "properties": {
@@ -810,6 +811,10 @@
                         "type": "integer",
                         "minimum": 1,
                         "description": "ID of the book title"
+                    },
+                    "publisherId": {
+                        "type": "integer",
+                        "description": "ID of the book publisher"
                     },
                     "translatorIds": {
                         "type": "array",
