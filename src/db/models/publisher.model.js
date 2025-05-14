@@ -23,7 +23,7 @@ const Publisher = sequelize.define("publisher", {
     }
   ],
   hooks: {
-    beforeCreate: (title, options) => {
+    beforeSave: (title, options) => {
       title.slug = makeUnique(title.slug);
     }
   }

@@ -23,7 +23,7 @@ const Profile = sequelize.define("profile", {
   timestamps: true,
   paranoid: true,
   hooks: {
-    beforeCreate: (profile, options) => {
+    beforeSave: (profile, options) => {
       profile.slug = makeUnique(profile.slug);
     }
   }
