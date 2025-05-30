@@ -914,6 +914,13 @@
                         "type": "string",
                         "format": "date",
                         "description": "Original publication date"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "List of tags to associate with the title (new tags will be created if they don’t exist)"
                     }
                 }
             },
@@ -936,6 +943,13 @@
                         "type": "string",
                         "format": "date",
                         "description": "Original publication date"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "List of tags to overwrite for the title (new tags will be created if they don’t exist)"
                     }
                 }
             },

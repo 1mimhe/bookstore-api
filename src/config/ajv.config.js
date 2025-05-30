@@ -1,5 +1,6 @@
 const Ajv = require('ajv');
 const addFormats = require('ajv-formats');
+const { toSlug } = require('../utils/sanitization.utils');
 const ajv = new Ajv({
     useDefaults: true,
     removeAdditional: true,
@@ -75,13 +76,7 @@ ajv.addKeyword({
     schema: false,
     validate: function (_, { parentData, parentDataProperty }) {
         if (parentData && parentDataProperty) {
-            const slug = parentData[parentDataProperty]
-                .trim()
-                .toLowerCase()
-                .replace(/[^\p{L}\p{N}\s-]/gu, '')
-                .replace(/[\s_]+/g, '-')
-                .replace(/^-+|-+$/g, '');
-
+            const slug = toSlug(parentData[parentDataProperty]);
             parentData[parentDataProperty] = slug;
         }
         return true;

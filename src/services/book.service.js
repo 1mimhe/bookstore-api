@@ -1,7 +1,7 @@
 const createHttpError = require("http-errors");
 const { addTitleValidator, editTitleValidator, addBookValidator, editBookValidator } = require("../validators/book.validators");
 const autoBind = require("auto-bind");
-const { Title, Book, BookImage } = require("../db/models/associations");
+const { Title, Book, BookImage, Tag, Profile, Publisher, Language } = require("../db/models/associations");
 const bookMessages = require("../constants/book.messages");
 const sequelize = require("../config/sequelize.config");
 
@@ -9,6 +9,10 @@ class BookService {
   #Title;
   #Book;
   #BookImage;
+  #Tag;
+  #Profile;
+  #Publisher;
+  #Language;
 
   constructor() {
     autoBind(this);
@@ -16,6 +20,10 @@ class BookService {
     this.#Title = Title;
     this.#Book = Book;
     this.#BookImage = BookImage;
+    this.#Tag = Tag;
+    this.#Profile = Profile;
+    this.#Publisher = Publisher;
+    this.#Language = Language;
   }
 
   async addTitle(titleDTO) {
@@ -33,6 +41,26 @@ class BookService {
           transaction: t
         });
       }
+
+      if (titleDTO.tags?.length > 0) {
+      const tagIds = await Promise.all(
+        titleDTO.tags.map(name =>
+          this.#Tag.findOrCreate({
+            where: {
+              name
+            },
+            defaults: {
+              name
+            },
+            transaction: t
+          }).then(([tag]) => tag.id)
+        )
+      );
+
+      await newTitle.addTags(tagIds, {
+        transaction: t
+      });
+    }
       
       return newTitle;
     });
@@ -52,13 +80,36 @@ class BookService {
   }
 
   async editTitle(titleId, titleDTO) {
-    const validate = editTitleValidator();    
+    const validate = editTitleValidator();
     const isValid = validate(titleDTO);
     if (!isValid) throw createHttpError.BadRequest(validate.errors);
 
-    const title = await this.getTitleById(titleId);
-    Object.keys(titleDTO).forEach(key => title[key] = titleDTO[key]);
-    return title.save();
+    return sequelize.transaction(async t => {
+      const title = await this.getTitleById(titleId);
+
+      Object.keys(titleDTO).forEach(key => {
+        if (key !== 'tags') title[key] = titleDTO[key];
+      });
+      await title.save({ transaction: t });
+
+      if (titleDTO.tags) {
+        const tagIds = await Promise.all(
+          titleDTO.tags.map(name =>
+            this.#Tag.findOrCreate({
+              where: { name },
+              defaults: { name },
+              transaction: t
+            }).then(([tag]) => tag.id)
+          )
+        );
+
+        await title.setTags(tagIds, {
+          transaction: t
+        });
+      }
+
+      return title;
+    });
   }
 
   async addBook(bookDTO) {
@@ -111,10 +162,42 @@ class BookService {
 
   async getCompleteTitleById(id) {
     return this.#Title.findByPk(id, {
-      include: [{
-        model: this.#Book
-      }] // TODO: other relations
-    });
+      include: [
+        {
+          model: this.#Tag,
+          as: 'tags',
+          through: { attributes: [] }
+        },
+        {
+          model: this.#Profile,
+          as: 'authors',
+          through: { attributes: [] }
+        },
+        {
+          model: this.#Book,
+          as: 'books',
+          include: [
+            {
+              model: this.#Profile,
+              as: 'translators',
+              through: { attributes: [] }
+            },
+            {
+              model: this.#Publisher,
+              as: 'publisher'
+            },
+            {
+              model: this.#BookImage,
+              as: 'bookImages'
+            },
+            {
+              model: this.#Language,
+              as: 'language'
+            }
+          ]
+        }
+      ]
+    }); // TODO: other relations
   }
 
   async getCompleteTitleBySlug(slug) {
@@ -122,10 +205,42 @@ class BookService {
       where: {
         slug
       },
-      include: [{
-        model: this.#Book
-      }] // TODO: other relations
-    });
+      include: [
+        {
+          model: this.#Tag,
+          as: 'tags',
+          through: { attributes: [] }
+        },
+        {
+          model: this.#Profile,
+          as: 'authors',
+          through: { attributes: [] }
+        },
+        {
+          model: this.#Book,
+          as: 'books',
+          include: [
+            {
+              model: this.#Profile,
+              as: 'translators',
+              through: { attributes: [] }
+            },
+            {
+              model: this.#Publisher,
+              as: 'publisher'
+            },
+            {
+              model: this.#BookImage,
+              as: 'bookImages'
+            },
+            {
+              model: this.#Language,
+              as: 'language'
+            }
+          ]
+        }
+      ]
+    }); // TODO: other relations
   }
   
   async deleteBook(id) {

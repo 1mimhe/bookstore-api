@@ -30,7 +30,17 @@ function addTitleValidator() {
       originallyPublishedAt: { 
         type: 'string',
         format: 'date'
-      }
+      },
+      tags: {
+        type: 'array',
+        commaSeparatedIntegers: true,
+        items: {
+          type: 'string',
+          minimum: 1
+        },
+        minItems: 1,
+        uniqueItems: true
+      },
     },
     required: ['name', 'authorIds'],
   };
@@ -58,7 +68,17 @@ function editTitleValidator() {
       originallyPublishedAt: { 
         type: 'string',
         format: 'date'
-      }
+      },
+      tags: {
+        type: 'array',
+        commaSeparatedIntegers: true,
+        items: {
+          type: 'string',
+          minimum: 1
+        },
+        minItems: 1,
+        uniqueItems: true
+      },
     },
   };
 
