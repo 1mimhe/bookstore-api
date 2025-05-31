@@ -613,6 +613,11 @@
                             "schema": {
                                 "$ref": "#/components/schemas/EditProfile"
                             }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditProfile"
+                            }
                         }
                     }
                 },
@@ -723,6 +728,11 @@
                             "schema": {
                                 "$ref": "#/components/schemas/EditPublisher"
                             }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditPublisher"
+                            }
                         }
                     }
                 },
@@ -750,6 +760,73 @@
                 "responses": {
                     "200": {
                         "description": "Publisher deleted status"
+                    }
+                }
+            }
+        },
+        "/tags": {
+            "post": {
+                "summary": "Create a new tag",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddTag"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddTag"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tag created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/tags/{id}": {
+            "patch": {
+                "summary": "Edit a tag",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Unique identifier of the tag",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditTag"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditTag"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tag created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
                     }
                 }
             }
@@ -1269,6 +1346,38 @@
                     "description": {
                         "type": "string",
                         "example": "A famous book publishing company."
+                    }
+                }
+            },
+            "AddTag": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "slug"
+                ]
+            },
+            "EditTag": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
                     }
                 }
             }
