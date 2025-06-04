@@ -23,8 +23,7 @@ const Tag = sequelize.define("tag", {
   paranoid: true,
   hooks: {
     beforeSave: (tag, options) => {
-      if (!tag.slug) tag.slug = tag.name;
-      tag.slug = toSlug(title.slug);
+      tag.slug = toSlug(tag.slug);
     }
   }
 });

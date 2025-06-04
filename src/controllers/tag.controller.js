@@ -1,3 +1,4 @@
+const autoBind = require("auto-bind");
 const tagService = require("../services/tag.service");
 
 class TagController {

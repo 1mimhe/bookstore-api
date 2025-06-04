@@ -27,6 +27,7 @@ class BookService {
   }
 
   async addTitle(titleDTO) {
+    console.log(titleDTO);
     const validate = addTitleValidator();
     const isValid = validate(titleDTO);    
     if (!isValid) throw createHttpError.BadRequest(validate.errors);
@@ -50,13 +51,15 @@ class BookService {
               name
             },
             defaults: {
-              name
+              name,
+              slug: name
             },
             transaction: t
           }).then(([tag]) => tag.id)
         )
       );
-
+      console.log(tagIds);
+      
       await newTitle.addTags(tagIds, {
         transaction: t
       });
@@ -92,12 +95,15 @@ class BookService {
       });
       await title.save({ transaction: t });
 
-      if (titleDTO.tags) {
+      if (titleDTO.tags?.length > 0) {
         const tagIds = await Promise.all(
           titleDTO.tags.map(name =>
             this.#Tag.findOrCreate({
               where: { name },
-              defaults: { name },
+              defaults: {
+                name,
+                slug: name
+              },
               transaction: t
             }).then(([tag]) => tag.id)
           )

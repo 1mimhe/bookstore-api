@@ -50,29 +50,29 @@ const TitleTag = sequelize.define('title_tag', {},
   ]
 });
 
-const ArticleTag = sequelize.define('article_tag', {},
-{
-  timestamps: true,
-  indexes: [
-    {
-      name: 'articleId_index',
-      fields: ['articleId']
-    },
-    {
-      name: 'tagId_index',
-      fields: ['tagId']
-    },
-    {
-      name: 'articleId_tagId_index',
-      fields: ['articleId', 'tagId'],
-      unique: true
-    }
-  ]
-});
+// const ArticleTag = sequelize.define('article_tag', {},
+// {
+//   timestamps: true,
+//   indexes: [
+//     {
+//       name: 'articleId_index',
+//       fields: ['articleId']
+//     },
+//     {
+//       name: 'tagId_index',
+//       fields: ['tagId']
+//     },
+//     {
+//       name: 'articleId_tagId_index',
+//       fields: ['articleId', 'tagId'],
+//       unique: true
+//     }
+//   ]
+// });
 
 module.exports = {
   BookTranslator,
   TitleTag,
-  ArticleTag,
+  // ArticleTag,
   TitleAuthor
 };

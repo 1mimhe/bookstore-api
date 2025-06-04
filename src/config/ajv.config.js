@@ -99,24 +99,22 @@ ajv.addKeyword({
 });
 
 ajv.addKeyword({
-    keyword: 'commaSeparatedIntegers',
-    modifying: true,
-    schema: false,
-    validate: function (schema, { parentData, parentDataProperty }) {
-        const data = parentData[parentDataProperty];
+  keyword: 'commaSeparatedArray',
+  modifying: true,
+  schema: false,
+  validate: function (schema, { parentData, parentDataProperty }) {
+    const data = parentData[parentDataProperty];
 
-        if (Array.isArray(data)) return true;
-        if (typeof data !== 'string') return false;
+    if (Array.isArray(data)) return true;
+    if (typeof data !== 'string') return false;
 
-        const parts = data.split(',').map(part => part.trim());
-        const ints = parts.map(n => Number(n));
+    const parts = data.split(',').map(part => part.trim());
 
-        if (ints.some(n => !Number.isInteger(n) || n < 1)) return false;
+    if (parts.some(p => p.length === 0)) return false;
 
-        parentData[parentDataProperty] = ints;
-
-        return true;
-    }
+    parentData[parentDataProperty] = parts;
+    return true;
+  }
 });
 
 ajv.addFormat('username', /^[a-zA-Z0-9](?!.*[_\-.]{2})[a-zA-Z0-9_\-.]{3,28}[a-zA-Z0-9]$/);

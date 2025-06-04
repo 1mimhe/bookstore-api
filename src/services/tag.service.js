@@ -1,3 +1,4 @@
+const autoBind = require("auto-bind");
 const createHttpError = require("http-errors");
 const { Tag } = require("../db/models/associations");
 const { addTagValidator, editTagValidator } = require("../validators/tag.validator");
