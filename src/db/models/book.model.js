@@ -37,6 +37,10 @@ const Book = sequelize.define("book", {
   sold: {
     type: DataTypes.INTEGER,
     default: 0
+  },
+  publisherId: {
+    type: DataTypes.INTEGER,
+    allowNull: true
   }
 }, {
   timestamps: true,
@@ -46,10 +50,10 @@ const Book = sequelize.define("book", {
       name: 'titleId_index',
       fields: ['titleId']
     },
-    // {
-    //   name: 'publisherId_index',
-    //   fields: ['publisherId']
-    // },
+    {
+      name: 'publisherId_index',
+      fields: ['publisherId']
+    }
   ]
 });
 

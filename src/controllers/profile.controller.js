@@ -21,6 +21,42 @@ class ProfileController {
       next(error);
     }
   }
+
+  async getProfileById(req, res, next) {
+    try {
+      const { id } = req.params;
+      const profile = await this.#Service.getProfileById(id);
+      return res.json(profile);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async editProfile(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { firstName, lastName, slug, biography, dateOfBirth, dateOfDeath } = req.body;
+  
+      await this.#Service.editProfile(id, { firstName, lastName, slug, biography, dateOfBirth, dateOfDeath });
+      return res.status(200).json({
+        success: true
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteProfile(req, res, next) {
+    try {
+      const { id } = req.params;
+      const isProfileDeleted = await this.#Service.deleteProfile(id) ? true : false;
+      return res.status(200).json({
+        success: isProfileDeleted
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new ProfileController();

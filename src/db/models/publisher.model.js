@@ -2,31 +2,31 @@ const { DataTypes } = require("@sequelize/core");
 const sequelize = require("../../config/sequelize.config");
 const { makeUnique } = require("../../utils/sanitization.utils");
 
-const Profile = sequelize.define("profile", {
-  firstName: {
+const Publisher = sequelize.define("publisher", {
+  name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  lastName: {
-    type: DataTypes.STRING
-  },
   slug: {
     type: DataTypes.STRING,
+    allowNull: false,
     unique: true
   },
-  biography: {
-    type: DataTypes.TEXT
-  },
-  dateOfBirth: DataTypes.DATE,
-  dateOfDeath: DataTypes.DATE
+  description: DataTypes.TEXT
 }, {
   timestamps: true,
   paranoid: true,
+    indexes: [
+    {
+      name: "slug_index",
+      fields: ["slug"]
+    }
+  ],
   hooks: {
-    beforeSave: (profile, options) => {
-      profile.slug = makeUnique(profile.slug);
+    beforeSave: (title, options) => {
+      title.slug = makeUnique(title.slug);
     }
   }
 });
 
-module.exports = Profile;
+module.exports = Publisher;

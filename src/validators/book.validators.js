@@ -163,13 +163,13 @@ function addBookValidator() {
         },
         minItems: 1,
         uniqueItems: true
+      },
+      publisherId: { 
+        type: 'integer',
+        minimum: 1
       }
-      // publisherId: { 
-      //   type: 'integer',
-      //   minimum: 1
-      // }
     },
-    required: ['name', 'titleId'],
+    required: ['name', 'titleId', 'publisherId'],
   };
 
   return ajv.compile(schema);
@@ -225,14 +225,6 @@ function editBookValidator() {
         type: 'number',
         minimum: 0
       },
-      // publisherId: { 
-      //   type: 'integer',
-      //   minimum: 1
-      // },
-      // translatorIds: { 
-      //   type: 'integer',
-      //   minimum: 1,
-      // }
     },
   };
 
