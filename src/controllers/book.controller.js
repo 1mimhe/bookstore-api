@@ -12,10 +12,10 @@ class TitleController {
 
   async addTitle(req, res, next) {
     try {
-      let { name, slug, authorIds, summary, originallyPublishedAt } = req.body;
+      let { name, slug, authorIds, summary, originallyPublishedAt, tags } = req.body;
       if (!slug) slug = name;
 
-      const newTitle = await this.#Service.addTitle({ name, slug, authorIds, summary, originallyPublishedAt });
+      const newTitle = await this.#Service.addTitle({ name, slug, authorIds, summary, originallyPublishedAt, tags });
       return res.status(201).json(newTitle);
     } catch (error) {
       next(error);
@@ -35,8 +35,8 @@ class TitleController {
   async editTitle(req, res, next) {
     try {
       const { id } = req.params;
-      const { name, slug, summary, originallyPublishedAt } = req.body;
-      const editedTitle = await this.#Service.editTitle(id, { name, slug, summary, originallyPublishedAt });
+      const { name, slug, summary, originallyPublishedAt, tags } = req.body;
+      const editedTitle = await this.#Service.editTitle(id, { name, slug, summary, originallyPublishedAt, tags });
       return res.json(editedTitle);
     } catch (error) {
       next(error);

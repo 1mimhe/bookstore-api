@@ -16,7 +16,7 @@ function addTitleValidator() {
       },
       authorIds: {
         type: 'array',
-        commaSeparatedIntegers: true,
+        commaSeparatedArray: true,
         items: {
           type: 'integer',
           minimum: 1
@@ -30,7 +30,16 @@ function addTitleValidator() {
       originallyPublishedAt: { 
         type: 'string',
         format: 'date'
-      }
+      },
+      tags: {
+        type: 'array',
+        commaSeparatedArray: true,
+        items: {
+          type: 'string'
+        },
+        minItems: 1,
+        uniqueItems: true
+      },
     },
     required: ['name', 'authorIds'],
   };
@@ -58,7 +67,17 @@ function editTitleValidator() {
       originallyPublishedAt: { 
         type: 'string',
         format: 'date'
-      }
+      },
+      tags: {
+        type: 'array',
+        commaSeparatedArray: true,
+        items: {
+          type: 'string',
+          minimum: 1
+        },
+        minItems: 1,
+        uniqueItems: true
+      },
     },
   };
 
@@ -156,7 +175,7 @@ function addBookValidator() {
       },
       translatorIds: {
         type: 'array',
-        commaSeparatedIntegers: true,
+        commaSeparatedArray: true,
         items: {
           type: 'integer',
           minimum: 1

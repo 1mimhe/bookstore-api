@@ -7,9 +7,9 @@ const Book = require("./book.model");
 const Language = require("./language.model");
 const BookImage = require("./bookImage.model");
 const Profile = require("./profile.model");
-const BookTranslator = require("./bookTranslator.model");
-const TitleAuthor = require("./titleAuthor.model");
+const { TitleAuthor, BookTranslator, TitleTag } = require("./junction.models");
 const Publisher = require("./publisher.model");
+const Tag = require("./tag.model");
 
 // User-Contact
 User.hasOne(Contact, {
@@ -65,7 +65,7 @@ BookImage.belongsTo(Book, {
   foreignKey: 'bookId'
 });
 
-// Title-Profile(Author)
+// Title-Profile (Author)
 Title.belongsToMany(Profile, {
   through: TitleAuthor,
   as: 'authors',
@@ -79,7 +79,7 @@ Profile.belongsToMany(Title, {
   otherKey: 'titleId'
 });
 
-// Book-Profile(Translator)
+// Book-Profile (Translator)
 Book.belongsToMany(Profile, {
   through: BookTranslator,
   as: 'translators',
@@ -102,12 +102,33 @@ Publisher.belongsTo(Book, {
   foreignKey: 'publisherId'
 });
 
+// Tag-Title
+Title.belongsToMany(Tag, {
+  through: TitleTag,
+  as: 'tags',
+  foreignKey: 'titleId',
+  otherKey: 'tagId'
+});
+Tag.belongsToMany(Title, {
+  through: TitleTag,
+  as: 'titles',
+  foreignKey: 'tagId',
+  otherKey: 'titleId'
+});
+
+// Tag-Article
+// ...
+
 module.exports = {
   User,
   Contact,
   Role,
+  Address,
   Title,
   Book,
   Language,
-  BookImage
+  BookImage,
+  Profile,
+  Publisher,
+  Tag
 };

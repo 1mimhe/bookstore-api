@@ -13,8 +13,8 @@ class LanguageController {
   async addLanguage(req, res, next) {
     try {
       const { language } = req.body;
-      const newlanguage = await this.#LanguageService.addLanguage(language);
-      return res.status(201).json(newlanguage);
+      const newLanguage = await this.#LanguageService.addLanguage(language);
+      return res.status(201).json(newLanguage);
     } catch (error) {
       next(error);
     }
