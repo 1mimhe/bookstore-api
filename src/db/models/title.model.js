@@ -9,6 +9,7 @@ const Title = sequelize.define("title", {
   },
   slug: {
     type: DataTypes.STRING,
+    allowNull: false,
     unique: true
   },
   summary: DataTypes.TEXT,

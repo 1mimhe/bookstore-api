@@ -225,14 +225,6 @@ function editBookValidator() {
         type: 'number',
         minimum: 0
       },
-      // publisherId: { 
-      //   type: 'integer',
-      //   minimum: 1
-      // },
-      // translatorIds: { 
-      //   type: 'integer',
-      //   minimum: 1,
-      // }
     },
   };
 
