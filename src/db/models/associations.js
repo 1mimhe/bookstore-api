@@ -6,6 +6,10 @@ const Title = require("./title.model");
 const Book = require("./book.model");
 const Language = require("./language.model");
 const BookImage = require("./bookImage.model");
+const Profile = require("./profile.model");
+const BookTranslator = require("./bookTranslator.model");
+const TitleAuthor = require("./titleAuthor.model");
+const Publisher = require("./publisher.model");
 
 // User-Contact
 User.hasOne(Contact, {
@@ -59,6 +63,43 @@ Book.hasMany(BookImage, {
 });
 BookImage.belongsTo(Book, {
   foreignKey: 'bookId'
+});
+
+// Title-Profile(Author)
+Title.belongsToMany(Profile, {
+  through: TitleAuthor,
+  as: 'authors',
+  foreignKey: 'titleId',
+  otherKey: 'authorId'
+});
+Profile.belongsToMany(Title, {
+  through: TitleAuthor,
+  as: 'titles',
+  foreignKey: 'authorId',
+  otherKey: 'titleId'
+});
+
+// Book-Profile(Translator)
+Book.belongsToMany(Profile, {
+  through: BookTranslator,
+  as: 'translators',
+  foreignKey: 'bookId',
+  otherKey: 'translatorId'
+});
+Profile.belongsToMany(Book, {
+  through: BookTranslator,
+  as: 'books',
+  foreignKey: 'translatorId',
+  otherKey: 'bookId'
+});
+
+// Book-Publisher
+Book.hasOne(Publisher, {
+  foreignKey: 'publisherId',
+  as: 'publisher'
+});
+Publisher.belongsTo(Book, {
+  foreignKey: 'publisherId'
 });
 
 module.exports = {

@@ -537,6 +537,222 @@
                     }
                 }
             }
+        },
+        "/profiles": {
+            "post": {
+                "summary": "Create a new profile (author/translator)",
+                "tags": [
+                    "Profile"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddProfile"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddProfile"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Profile created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/profiles/{id}": {
+            "get": {
+                "summary": "Get profile by ID",
+                "tags": [
+                    "Profile"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Edit profile by ID",
+                "tags": [
+                    "Profile"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditProfile"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete profile by ID",
+                "tags": [
+                    "Profile"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profile deleted status"
+                    }
+                }
+            }
+        },
+        "/publishers": {
+            "post": {
+                "summary": "Add a new publisher",
+                "description": "Creates a new publisher with name, slug, and optional description.",
+                "tags": [
+                    "Publisher"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddPublisher"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddPublisher"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Publisher created successfully"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/publishers/{id}": {
+            "get": {
+                "summary": "Get publisher by ID",
+                "tags": [
+                    "Publisher"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Edit publisher by ID",
+                "tags": [
+                    "Publisher"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditPublisher"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete publisher by ID",
+                "tags": [
+                    "Publisher"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Publisher deleted status"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -666,11 +882,11 @@
                     }
                 }
             },
-            "CreateTitle": {
+            "AddTitle": {
                 "type": "object",
                 "required": [
                     "name",
-                    "slug"
+                    "authorIds"
                 ],
                 "properties": {
                     "name": {
@@ -680,6 +896,15 @@
                     "slug": {
                         "type": "string",
                         "description": "URL-friendly identifier"
+                    },
+                    "authorIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
                     },
                     "summary": {
                         "type": "string",
@@ -718,7 +943,9 @@
                 "type": "object",
                 "required": [
                     "name",
-                    "titleId"
+                    "titleId",
+                    "publisherId",
+                    "authorIds"
                 ],
                 "properties": {
                     "name": {
@@ -734,6 +961,19 @@
                         "type": "integer",
                         "minimum": 1,
                         "description": "ID of the book title"
+                    },
+                    "publisherId": {
+                        "type": "integer",
+                        "description": "ID of the book publisher"
+                    },
+                    "translatorIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
                     },
                     "languageId": {
                         "type": "integer",
@@ -913,6 +1153,108 @@
                         "type": "number",
                         "minimum": 0,
                         "description": "Price of the book"
+                    }
+                }
+            },
+            "AddProfile": {
+                "type": "object",
+                "required": [
+                    "firstName"
+                ],
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "slug": {
+                        "type": "string",
+                        "maxLength": 150
+                    },
+                    "biography": {
+                        "type": "string",
+                        "maxLength": 5000
+                    },
+                    "dateOfBirth": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1985-04-15"
+                    },
+                    "dateOfDeath": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2020-01-01"
+                    }
+                }
+            },
+            "EditProfile": {
+                "type": "object",
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "slug": {
+                        "type": "string",
+                        "maxLength": 150
+                    },
+                    "biography": {
+                        "type": "string",
+                        "maxLength": 5000
+                    },
+                    "dateOfBirth": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1985-04-15"
+                    },
+                    "dateOfDeath": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2020-01-01"
+                    }
+                }
+            },
+            "AddPublisher": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Penguin Books"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "penguin-books"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "A famous book publishing company."
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "EditPublisher": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Penguin Books"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "penguin-books"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "A famous book publishing company."
                     }
                 }
             }

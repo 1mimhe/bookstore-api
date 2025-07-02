@@ -27,12 +27,12 @@ function removeEmptyValues(obj) {
                 continue;
             }
         }
-        
+
         if (key !== null && parent !== null) {
             if (
-                currentObj === undefined || 
-                currentObj === null || 
-                currentObj === '' || 
+                currentObj === undefined ||
+                currentObj === null ||
+                currentObj === '' ||
                 (Array.isArray(currentObj) && currentObj.length === 0)
             ) {
                 delete parent[key];
@@ -42,11 +42,11 @@ function removeEmptyValues(obj) {
 
         if (currentObj && typeof currentObj === 'object') {
             const keys = Object.keys(currentObj);
-            
+          
             for (let i = 0; i < keys.length; i++) {
                 const k = keys[i];
                 const value = currentObj[k];
-                
+
                 if (value && typeof value === 'object') {
                     stack.push({ obj: value, key: k, parent: currentObj });
                 } else if (value === undefined || value === null || value === '') {
@@ -102,6 +102,11 @@ ajv.addKeyword({
       return true;
     }
   });
+
+ajv.addFormat('username', /^[a-zA-Z0-9](?!.*[_\-.]{2})[a-zA-Z0-9_\-.]{3,28}[a-zA-Z0-9]$/);
+ajv.addFormat('strong-password', /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/);
+ajv.addFormat('iran-phone', /^09\d{9}$/);
+ajv.addFormat('date', /^\d{4}-\d{2}-\d{2}$/);
 
 ajv.addFormat('username', /^[a-zA-Z0-9](?!.*[_\-.]{2})[a-zA-Z0-9_\-.]{3,28}[a-zA-Z0-9]$/);
 ajv.addFormat('strong-password', /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/);

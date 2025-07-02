@@ -20,10 +20,22 @@ class BookService {
 
   async addTitle(titleDTO) {
     const validate = addTitleValidator();
-    const isValid = validate(titleDTO);
+    const isValid = validate(titleDTO);    
     if (!isValid) throw createHttpError.BadRequest(validate.errors);
     // TODO: elasticsearch
-    return this.#Title.create(titleDTO);
+    return sequelize.transaction(async t => {
+      const newTitle = await this.#Title.create(titleDTO, {
+        transaction: t
+      });
+
+      if (titleDTO.authorIds?.length > 0) {
+        await newTitle.addAuthors(titleDTO.authorIds, {
+          transaction: t
+        });
+      }
+      
+      return newTitle;
+    });
   }
 
   async getTitleById(id) {
@@ -34,8 +46,8 @@ class BookService {
 
   async getPaginatedTitles(limit = 10, offset = 0) {
     return this.#Title.findAll({
-      limit,
-      offset
+      limit: Number(limit),
+      offset: Number(offset)
     });
   }
 
@@ -60,6 +72,12 @@ class BookService {
       const newBook = await this.#Book.create(book, {
         transaction: t
       });
+
+      if (bookDTO.translatorIds?.length > 0) {
+        await newBook.addTranslators(bookDTO.translatorIds, {
+          transaction: t
+        });
+      }
 
       if (bookImages) {
         const imagesToCreate = bookImages.map(image => ({

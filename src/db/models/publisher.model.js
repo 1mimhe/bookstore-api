@@ -2,7 +2,7 @@ const { DataTypes } = require("@sequelize/core");
 const sequelize = require("../../config/sequelize.config");
 const { makeUnique } = require("../../utils/sanitization.utils");
 
-const Title = sequelize.define("title", {
+const Publisher = sequelize.define("publisher", {
   name: {
     type: DataTypes.STRING,
     allowNull: false
@@ -12,12 +12,11 @@ const Title = sequelize.define("title", {
     allowNull: false,
     unique: true
   },
-  summary: DataTypes.TEXT,
-  originallyPublishedAt: DataTypes.DATEONLY
+  description: DataTypes.TEXT
 }, {
-  timestamp: true,
+  timestamps: true,
   paranoid: true,
-  indexes: [
+    indexes: [
     {
       name: "slug_index",
       fields: ["slug"]
@@ -30,4 +29,4 @@ const Title = sequelize.define("title", {
   }
 });
 
-module.exports = Title;
+module.exports = Publisher;

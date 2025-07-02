@@ -12,8 +12,10 @@ class TitleController {
 
   async addTitle(req, res, next) {
     try {
-      const { name, slug, summary, originallyPublishedAt } = req.body;
-      const newTitle = await this.#Service.addTitle({ name, slug, summary, originallyPublishedAt });
+      let { name, slug, authorIds, summary, originallyPublishedAt } = req.body;
+      if (!slug) slug = name;
+
+      const newTitle = await this.#Service.addTitle({ name, slug, authorIds, summary, originallyPublishedAt });
       return res.status(201).json(newTitle);
     } catch (error) {
       next(error);
@@ -43,10 +45,11 @@ class TitleController {
 
   async addBook(req, res, next) {
     try {
-      const { name, anotherName, titleId, languageId, ISBN, quarto, cover,
+      const { name, anotherName, titleId,
+        translatorIds, publisherId, languageId, ISBN, quarto, cover,
         pagesNumber, publishedAt, publishSeries, weight, stock, price, bookImages } = req.body;
         
-      const newBook = await this.#Service.addBook({ name, anotherName, titleId, languageId, ISBN, quarto, cover,
+      const newBook = await this.#Service.addBook({ name, anotherName, titleId, translatorIds, publisherId, languageId, ISBN, quarto, cover,
                                                 pagesNumber, publishedAt, publishSeries, weight, stock, price, bookImages });
       return res.status(201).json(newBook);
     } catch (error) {
@@ -60,9 +63,11 @@ class TitleController {
       const { name, anotherName, languageId, ISBN, quarto, cover,
         pagesNumber, publishedAt, publishSeries, weight, stock, price } = req.body;
         
-      const editedBook = await this.#Service.editBook(id, { name, anotherName, languageId, ISBN, quarto, cover,
-                                                pagesNumber, publishedAt, publishSeries, weight, stock, price });
-      return res.status(200).json(editedBook);
+      await this.#Service.editBook(id, { name, anotherName, languageId, ISBN, quarto, cover,
+                                            pagesNumber, publishedAt, publishSeries, weight, stock, price });
+      return res.status(200).json({
+        success: true
+      });
     } catch (error) {
       next(error);
     }
