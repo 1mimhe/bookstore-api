@@ -86,12 +86,10 @@ class BookService {
         }));
         
         const newBookImages = await this.#BookImage.bulkCreate(imagesToCreate, { transaction: t });
-
-        return {
-          ...newBook.dataValues,
-          bookImages: newBookImages
-        };
+        newBook.bookImages = newBookImages;
       }
+
+      return newBook;
     });
   }
 
